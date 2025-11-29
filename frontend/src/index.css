@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "roboto";
+  src: url("./assets/fonts/Roboto-Light.ttf");
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: "roboto";
+  src: url("./assets/fonts/Roboto-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "roboto";
+  src: url("./assets/fonts/Roboto-SemiBold.ttf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "roboto";
+  src: url("./assets/fonts/Roboto-ExtraBold.ttf");
+  font-weight: 900;
+}
+
+@theme {
+  --color-back: var(--background);
+  --color-text: var(--text);
+  --color-bluepri: var(--bluepri);
+  --color-bluesecon: var(--bluesecon);
+  --color-bluethir: var(--bluethir);
+  --color-bluefour: var(--bluefour);
+}
+
+:root {
+  --background: #fff;
+  --text: #121212;
+  --bluepri: #1565c0;
+  --bluesecon: #40C4FF;
+  --bluethir: #c4edff;
+  --bluefour: #ecf9ff;
+}
+
+
+
+.carousel {
+  @apply flex-shrink-0 flex-grow-0 basis-full;
+}
+
+.carousels {
+  @apply overflow-auto snap-x;
+}

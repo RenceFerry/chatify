@@ -1,6 +1,61 @@
-import { FaGoogle } from "react-icons/fa";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Verify = () => {
+  const [ expiration, setExpiration ] = useState(5*60);
+  const [ disabled, setDisabled ] = useState(false);
+  const [ error, setError ] = useState<{ message: string }>();
+  const navigate = useNavigate();
+
+  if (expiration <= 0) {
+    setDisabled(true);
+  }
+
+  //countdown
+  useEffect(() => {
+    if (expiration <= 0) {
+      return;
+    }
+
+    const countDown = setInterval(()=>{
+      setExpiration((prev) => prev - 1);
+  
+    }, 1000);
+
+    return () => {
+      clearInterval(countDown);
+    };
+  }, [expiration]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const otp = Object.fromEntries(formData.entries());
+
+    let result;
+    try {
+      result = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/verify`, {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(otp),
+      });
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+
+    if (!result.ok) {
+      const response = await result.json();
+
+      setError(response);
+    } else if (result.redirected) {
+      navigate(result.url);
+    }
+  }
+
   return (
     <div className='h-full relative w-full bg-back overflow-hidden flex flex-col justify-around items-center'>
       {/** background */}
@@ -14,32 +69,25 @@ const Verify = () => {
       </div>
 
       {/** form */}
-      <div className='flex-3 z-20 w-full flex justify-center items-center'>
+      <div className='flex-3 z-20 w-full flex justify-center items-start'>
         <div className='w-[60%] shadow-md shadow-blueC min-w-[300px] max-w-[600px] rounded-xl py-20 flex flex-row items-center justify-center gap-3 bg-back px-5 md:px-10'>
-          <form action="none" className='flex-1 flex flex-col justify-center items-start'>
+          <form onSubmit={handleSubmit} className='flex-1 flex flex-col justify-center items-start'>
             <div className='flex flex-col gap-2 mb-5 w-full'>
-              <label htmlFor="email" className='text-blueD text-lg font-semibold'>Email</label>
-              <input title='email' placeholder='Type your email' type='email' name='email' className='bg-none h-14 border border-text rounded-md px-3 text-blueD' />
+              <label htmlFor="otp" className='text-blueD text-lg font-semibold'>Enter the 6 digit code we sent to your email.</label>
+              <input title='code' placeholder='6 digit code' name='otp' className='bg-none h-14 border border-text rounded-md px-3 text-blueD' />
             </div>
 
-            <div className='flex flex-col gap-2 mb-5 w-full'>
-              <label htmlFor="password" className='text-blueD text-lg font-semibold'>Password</label>
-              <input title='password' placeholder='Type your password' type='password' name='password' className='bg-none h-14 border border-text rounded-md px-3 text-blueD' />
-            </div>
+            <button type='submit' disabled={disabled} title='login' className='w-full bg-blueC h-14 rounded-xl flex justify-center items-center text-lg font-semibold text-blueA'>Verify</button>
 
-            <div className='flex flex-col gap-2 mb-5 w-full'>
-              <button type='button' title='login' className='w-full bg-blueC h-14 rounded-xl grid items-center text-lg font-semibold text-blueA'>Log in</button>
+            <button title="resend" type="button" className="text-blueC mt-2 underline">Resend code?</button>
 
-              <div className='flex w-full justify-between items-center'>
-                <div className='flex-1 bg-zinc-500 h-[2px]'></div>
-                <p className='text-zinc-500 mx-3'>OR</p>
-                <div className='flex-1 bg-zinc-500 h-[2px]'></div>
-              </div>
+            <p className="mx-auto mt-2 text-blueD">Code will expire in {!(Math.floor(expiration/60)==0)?`${Math.floor(expiration/60)}:`:''}{(expiration % 60)<10?`0${expiration % 60}`:expiration % 60}</p>
 
-              <button type='button' title='login' className='w-full bg-blueC h-14 rounded-xl flex justify-center items-center text-lg font-semibold text-blueA'><FaGoogle className="inline mr-2" />Continue with Google</button>
-            </div>
-
-
+            {
+              error?.message && (
+                <p className='m-auto mt-2 text-error'>{error.message}</p>
+              )
+            }
           </form>
         </div>
       </div>

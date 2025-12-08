@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { login, logout, signup, authenticate, store } from '../controllers/auth.controller.js'
+import { login, logout, signup, verify, store } from '../controllers/auth.controller.js'
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
@@ -15,7 +15,7 @@ const createJwt = (req: Request, res: Response) => {
   res.redirect('/');
 }
 
-router.post('/authenticate', authenticate, store, createJwt);
+router.post('/verify', verify, store, createJwt);
 router.post('/login', login, createJwt);
 router.post('/signup', signup);
 router.post('/logout', logout);

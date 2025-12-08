@@ -6,6 +6,10 @@ import { generateSecureNumber } from '../lib/utils.js';
 import bcrypt from 'bcryptjs';
 import { signupSchema, loginSchema } from '../lib/schema.js';
 import z, { json } from 'zod';
+import 'dotenv/config'
+
+const isProduction = process.env.PRODUCTION == 'true';
+const sameSite = process.env.SAME_SITE || 'lax';
 
 type User = {
   email: string,
@@ -107,16 +111,23 @@ export const signup = async (req: Request, res: Response) => {
     })
   }
 
-  res.cookie("email", email, {path: '/'})
+  res.cookie("email", email, {
+    path: '/',
+    httpOnly: true,
+    //@ts-ignore
+    sameSite: 'lax',
+    secure: false
+  })
   sendEmail(email, otp);
   return res.redirect('/auth/verify');
 }
 
 //authenticate controller
-export const authenticate = async (req: Request, res: Response, next: NextFunction) =>{
+export const verify = async (req: Request, res: Response, next: NextFunction) =>{
   const email = req.cookies.email;
   const otp = Number(req.body.otp);
   
+  console.log(otp, email)
   let data;
   try {
     const result = await redis.get(email);
@@ -129,6 +140,7 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
 
     data = JSON.parse(result!);
   } catch (e) {
+    console.log(e)
     return res.status(500).json({
       message: "Server error, try again later"
     })

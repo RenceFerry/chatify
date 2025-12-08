@@ -27,22 +27,40 @@
 @theme {
   --color-back: var(--background);
   --color-text: var(--text);
-  --color-bluepri: var(--bluepri);
-  --color-bluesecon: var(--bluesecon);
-  --color-bluethir: var(--bluethir);
-  --color-bluefour: var(--bluefour);
+  --color-blueA: var(--blueA);
+  --color-blueB: var(--blueB);
+  --color-blueC: var(--blueC);
+  --color-blueD: var(--blueD);
+  --color-wA: var(--wA);
+  --color-blueF: var(--blueF);
+  --color-blueG: var(--blueG);
+  --color-blueH: var(--blueH);
+  --color-blueI: var(--blueI);
+  --color-blueJ: var(--blueJ);
+  --color-error: var(--error);
 }
 
-:root {
+:root.light {
   --background: #fff;
   --text: #121212;
-  --bluepri: #1565c0;
-  --bluesecon: #40C4FF;
-  --bluethir: #c4edff;
-  --bluefour: #ecf9ff;
+  --blueA: #c4edff;
+  --blueB: #a7e4ff;
+  --blueC: #2bbbfb;
+  --blueD: #1568c3;
+  --wA: #ecf9ff;
+  --error: oklch(63.7% 0.237 25.331);
 }
 
-
+:root.dark {
+  --background: #121212;
+  --text: #f5f5f5;
+  --blueA: #092a51;
+  --blueB: #144d83;
+  --blueC: #20b6f9;
+  --blueD: #40c4ff;
+  --wA: #2c2d3a;
+  --error: oklch(69.242% 0.15146 21.764);
+}
 
 .carousel {
   @apply flex-shrink-0 flex-grow-0 basis-full;
@@ -50,4 +68,8 @@
 
 .carousels {
   @apply overflow-auto snap-x;
+}
+
+button{
+  @apply cursor-pointer;
 }

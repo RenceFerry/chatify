@@ -115,8 +115,8 @@ export const signup = async (req: Request, res: Response) => {
     path: '/',
     httpOnly: true,
     //@ts-ignore
-    sameSite: 'lax',
-    secure: false
+    sameSite: 'none',
+    secure: true
   })
   sendEmail(email, otp);
   return res.redirect('/auth/verify');

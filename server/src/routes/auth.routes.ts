@@ -1,5 +1,5 @@
-import { Router, Request, Response } from 'express';
-import { login, logout, signup, verify, store } from '../controllers/auth.controller.js'
+import { Router, Request, Response, NextFunction } from 'express';
+import { login, logout, signup, verify, store, authenticate } from '../controllers/auth.controller.js'
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
@@ -17,6 +17,9 @@ const createJwt = (req: Request, res: Response) => {
 
 router.post('/verify', verify, store, createJwt);
 router.post('/login', login, createJwt);
+router.post('/authenticate', authenticate, (req: Request, res: Response, next: NextFunction) => {
+  return res.status(200).json({authenticated: true});
+});
 router.post('/signup', signup);
 router.post('/logout', logout);
 

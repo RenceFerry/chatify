@@ -5,11 +5,13 @@ import transporter from '../lib/nodemailer.js';
 import { generateSecureNumber } from '../lib/utils.js';
 import bcrypt from 'bcryptjs';
 import { signupSchema, loginSchema } from '../lib/schema.js';
-import z, { json } from 'zod';
+import jwt from 'jsonwebtoken';
+import z from 'zod';
 import 'dotenv/config'
 
 const isProduction = process.env.PRODUCTION == 'true';
 const sameSite = process.env.SAME_SITE || 'lax';
+const jwtSecret = process.env.JWT_SECRET;
 
 type User = {
   email: string,
@@ -122,7 +124,7 @@ export const signup = async (req: Request, res: Response) => {
   return res.redirect('/auth/verify');
 }
 
-//authenticate controller
+//verify controller
 export const verify = async (req: Request, res: Response, next: NextFunction) =>{
   const email = req.cookies.email;
   const otp = Number(req.body.otp);
@@ -163,6 +165,21 @@ export const logout = (req: Request, res: Response) => {
   res.clearCookie('email');
 
   res.redirect('/login');
+}
+
+export const authenticate = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.status(401).json({authenticated: false});
+  }
+
+  try {
+    const user = jwt.verify(token as string, jwtSecret as string);
+
+    next();
+  } catch (e) {
+    return res.status(401).json({authenticated: false});
+  }
 }
 
 //store user in db

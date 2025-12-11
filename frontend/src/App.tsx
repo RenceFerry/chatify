@@ -5,6 +5,8 @@ import { WelcomePage } from "./components/welcomePage";
 import Login from "./components/auth/login";
 import Signup from './components/auth/signup';
 import Verify from './components/auth/verify';
+import ProtectedRoutes from "./components/protectedRoutes";
+import Home from './components/home/home'
 
 type ThemeContextType = {
   theme: string;
@@ -54,6 +56,9 @@ function App() {
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/signup" element={<Signup />} />
             <Route path="/auth/verify" element={<Verify />} />
+            <Route element={<ProtectedRoutes />}>
+              <Route path="/" element={<Home />} />
+            </Route>
           </Routes>
         }
         <button type="button" title="theme" className="absolute bottom-3 left-3 z-50" onClick={changeTheme}>toggle theme</button>

@@ -42,9 +42,6 @@ const Signup = () => {
       console.log(e);
       return;
     }
-    
-    
-
     if (!result.ok) {
       const response = await result.json();
 
@@ -55,7 +52,6 @@ const Signup = () => {
     }
 
   }
-
 
   return (
     <div className='h-full relative w-full bg-back overflow-hidden flex flex-col justify-around items-center'>

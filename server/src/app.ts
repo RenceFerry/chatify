@@ -1,4 +1,5 @@
 import express, { Request, Response, Application } from 'express';
+import { authenticate } from './controllers/auth.controller.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {
@@ -10,7 +11,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const routesRegex = /^(\/|\/profile|\/video|\/chat|\/room)$/;
+const routesRegex = /^(\/profile|\/video|\/chat|\/room)$/;
 
 const app: Application = express();
 app.use(express.json());
@@ -20,23 +21,24 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use('/api/auth', authRoutes);
+app.get('/', authenticate, (req: Request, res: Response) => {
+  res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+});
 
 app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 app.use('/auth', authPage);
 
-app.get(routesRegex, (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
-});
+app.use('/api/auth', authRoutes);
 
 app.use('/not-found', (req: Request, res: Response) => {
-  res.status(404).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
   res.send('Not Found');
 });
+
 
 app.use((req: Request,res: Response) => {
   res.redirect('/not-found')
 });
+
 
 export default app;

@@ -11,7 +11,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const routesRegex = /^(\/profile|\/video|\/chat|\/room)$/;
+const routesRegex = /^(\/profile|\/|\/video|\/chat|\/room)$/;
 
 const app: Application = express();
 app.use(express.json());
@@ -21,7 +21,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.get('/', authenticate, (req: Request, res: Response) => {
+app.use(routesRegex, authenticate, (req: Request, res: Response) => {
   res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
 

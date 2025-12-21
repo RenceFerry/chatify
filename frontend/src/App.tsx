@@ -1,12 +1,13 @@
 import { useState, useEffect, createContext } from "react"
 import { Loading } from "./components/loading"
 import { Routes, Route, useNavigate } from "react-router-dom"
-import { WelcomePage } from "./components/welcomePage";
-import Login from "./components/auth/login";
-import Signup from './components/auth/signup';
-import Verify from './components/auth/verify';
+import { WelcomePage } from "./pages/welcomePage";
+import Login from "./pages/auth/login";
+import Signup from './pages/auth/signup';
+import Verify from './pages/auth/verify';
 import ProtectedRoutes from "./components/protectedRoutes";
-import Home from './components/home/home'
+import UnprotectedRoutes from "./components/unprotectedRoutes";
+import Home from './pages/home/home'
 
 type ThemeContextType = {
   theme: string;
@@ -51,11 +52,13 @@ function App() {
         {
           loading ? <Loading /> :
           <Routes>
-            <Route path='/loading' element={<Loading />} />
-            <Route path="/welcome" element={<WelcomePage />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/signup" element={<Signup />} />
-            <Route path="/auth/verify" element={<Verify />} />
+            <Route element={<UnprotectedRoutes />}>
+              <Route path='/loading' element={<Loading />} />
+              <Route path="/welcome" element={<WelcomePage />} />
+              <Route path="/auth/login" element={<Login />} />
+              <Route path="/auth/signup" element={<Signup />} />
+              <Route path="/auth/verify" element={<Verify />} />
+            </Route>
             <Route element={<ProtectedRoutes />}>
               <Route path="/" element={<Home />} />
             </Route>

@@ -167,6 +167,7 @@ export const logout = (req: Request, res: Response) => {
   res.redirect('/login');
 }
 
+//authentication controller
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token;
   if (!token) {
@@ -212,8 +213,6 @@ export const store = async (req: Request, res: Response, next: NextFunction) => 
     return next();
   }
 }
-
-
 
 //some helper functions
 const sendEmail = (email: string, otp: number) => {

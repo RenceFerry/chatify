@@ -1,4 +1,4 @@
-import welcomeImages from "./welcomeImages"
+import welcomeImages from "../components/welcomeImages"
 import { useState, useRef } from "react"
 import React from "react";
 import { Link } from "react-router-dom";

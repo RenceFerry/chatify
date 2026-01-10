@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Loading } from './loading';
+import { Loading } from '../components/loading';
 
 const ProtectedRoutes = () => {
   const [ loading, setLoading ] = useState(true);
@@ -16,11 +16,10 @@ const ProtectedRoutes = () => {
       setLoading(false);
     }
     authenticate();
-
   }, []);
 
   if (loading) return <Loading />;
-  if (!valid) return <Navigate to='/auth/login' />;
+  if (valid) return <Navigate to='/' />;
 
   return <Outlet />;
 }

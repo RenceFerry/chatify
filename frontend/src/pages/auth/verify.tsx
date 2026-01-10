@@ -28,7 +28,7 @@ const Verify = () => {
   }, [expiration]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+    e.preventDefault(); 
     const formData = new FormData(e.currentTarget);
     const otp = Object.fromEntries(formData.entries());
 
@@ -52,7 +52,21 @@ const Verify = () => {
 
       setError(response);
     } else if (result.redirected) {
+
       navigate(result.url);
+    }
+  }
+
+  const handleResendOtp = async () => {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/resendOtp`, {
+      method: 'POST',
+      credentials: "include",
+    });
+
+    if (response.ok) setExpiration(5*60);
+    else {
+      const message = await response.json();
+      setError(message);
     }
   }
 
@@ -79,7 +93,7 @@ const Verify = () => {
 
             <button type='submit' disabled={disabled} title='login' className='w-full bg-blueC h-14 rounded-xl flex justify-center items-center text-lg font-semibold text-blueA'>Verify</button>
 
-            <button title="resend" type="button" className="text-blueC mt-2 underline">Resend code?</button>
+            <button title="resend" type="button" onClick={handleResendOtp} className="text-blueC mt-2 underline">Resend code?</button>
 
             <p className="mx-auto mt-2 text-blueD">Code will expire in {!(Math.floor(expiration/60)==0)?`${Math.floor(expiration/60)}:`:''}{(expiration % 60)<10?`0${expiration % 60}`:expiration % 60}</p>
 

@@ -14,5 +14,4 @@ redis.on('error', err => console.log('Redis client Error', err));
 
 await redis.connect();
 
-
 export default redis;

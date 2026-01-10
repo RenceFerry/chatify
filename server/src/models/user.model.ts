@@ -13,4 +13,23 @@ export const User = {
 
   findByEmail: (email: string) => prisma.users.findUnique({ where: { email } }),
   findById: (id: string) => prisma.users.findUnique({ where: { id } }),
+  findOrCreate: (data: { 
+    email: string;
+    username: string; 
+    password?: string | null;
+    image?: string;
+  }) => prisma.users.upsert({
+    where: { email: data.email},
+    update: {},
+    create: {
+      email: data.email,
+      username: data.username,
+      image: data.image,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+    }
+  })
 }

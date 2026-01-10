@@ -10,7 +10,7 @@ import z from 'zod';
 import 'dotenv/config'
 
 const isProduction = process.env.PRODUCTION == 'true';
-const sameSite = process.env.SAME_SITE || 'lax';
+const sameSite = process.env.SAME_SITE || 'none';
 const jwtSecret = process.env.JWT_SECRET;
 
 type User = {
@@ -45,10 +45,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const { password, email, username, id } = user;
     if (!password) return res.status(400).json({
-      message: "User don't have a password, login with the following options instead."
+      message: "User don't have a password, login with google instead."
     })
 
     const isCorrect = await bcrypt.compare(validatedData.data.password as string, user.password as string);
+
+    console.log(isCorrect);
 
     if (isCorrect) {
       req.user = { id, email, username };
@@ -103,7 +105,7 @@ export const signup = async (req: Request, res: Response) => {
   const password = await bcrypt.hash(validatedData.data.password, 10);
 
   try {
-    const res = await redis.set(email, JSON.stringify({username, password, email, otp}), {expiration: {type: 'EX', value: 60*60}});
+    const res = await redis.set(email, JSON.stringify({username, password, email, otp}), {expiration: {type: 'EX', value: 60*5}});
 
     console.log(res);
     console.log(`Storing email${email}!`);
@@ -117,8 +119,8 @@ export const signup = async (req: Request, res: Response) => {
     path: '/',
     httpOnly: true,
     //@ts-ignore
-    sameSite: 'none',
-    secure: true
+    sameSite: sameSite,
+    secure: true,
   })
   sendEmail(email, otp);
   return res.redirect('/auth/verify');
@@ -127,16 +129,17 @@ export const signup = async (req: Request, res: Response) => {
 //verify controller
 export const verify = async (req: Request, res: Response, next: NextFunction) =>{
   const email = req.cookies.email;
-  const otp = Number(req.body.otp);
+  if (!email) return res.status(400).json({message: 'Email not found'});
+  const otp = req.body.otp;
+  if (!otp) return res.status(400).json({message: 'Otp not found'});
   
-  console.log(otp, email)
   let data;
   try {
     const result = await redis.get(email);
 
     if (!result) {
       return res.status(400).json({
-        message: "Invalid OTP"
+        message: "Expired OTP"
       })
     }
 
@@ -148,7 +151,7 @@ export const verify = async (req: Request, res: Response, next: NextFunction) =>
     })
   }
 
-  if (data.otp === otp) {
+  if (Number(data.otp) === Number(otp)) {
     const { email, username, password } = data;
     req.user = { email, username, password };
 
@@ -212,6 +215,41 @@ export const store = async (req: Request, res: Response, next: NextFunction) => 
     
     return next();
   }
+}
+
+//resend otp
+export const resendOtp = async (req: Request, res: Response, next: NextFunction) => {
+  const email = req.cookies.email;
+  if (!email) return res.status(400).json({message: 'Email not provided'});
+
+  let otp;
+  try {
+    const result = await redis.get(email);
+
+    if (!result) return res.status(400).json({message: 'Expired OTP, sign up again'});
+
+    otp = generateSecureNumber(6);
+    const data = JSON.parse(result);
+
+    await redis.set(email, JSON.stringify({
+      email,
+      password: data.password,
+      otp,
+      username: data.username
+    }), {expiration: {type: 'EX', value: 60*5}})
+
+  } catch(e){
+    return res.status(500).json({message: 'server error, try again later'});
+  }
+
+  try {
+    sendEmail(email, otp);
+  } catch(e) {
+    return res.status(500).json({message: 'Server error, try again later'});
+  }
+
+  console.log('OK');
+  res.sendStatus(200);
 }
 
 //some helper functions

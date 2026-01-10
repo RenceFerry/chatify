@@ -12,10 +12,56 @@ datasource db {
 
 model users {
   created_at DateTime @default(now()) @db.Timestamptz(6)
-  username   String?
+  username   String
   password   String?
   image      String?
   email      String   @unique
   id         String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  conversations  conversationParticipant[]
+  messages       message[]
 }
 
+model conversation {
+  id         String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  name       String
+
+  // Relations
+  participants conversationParticipant[]
+  messages     message[]
+
+  @@map("conversations")
+}
+
+model conversationParticipant {
+  id              String  @id @unique @default(dbgenerated("gen_random_uuid()"))  @db.Uuid
+  userId          String  @db.Uuid
+  conversationId  String  @db.Uuid
+  lastReadAt      DateTime?
+
+  // Relations
+  user            users          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation    conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conversationId])
+  @@index([conversationId])
+  @@map("conversation_participants")
+}
+
+model message {
+  id             String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content        String
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+
+  senderId       String  @db.Uuid
+  conversationId String  @db.Uuid
+
+  // Relations
+  sender          users          @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  conversation    conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@map("messages")
+}

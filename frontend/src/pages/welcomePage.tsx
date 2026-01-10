@@ -1,4 +1,4 @@
-import welcomeImages from "../components/welcomeImages"
+import welcomeImages from "../utils/welcomeImages"
 import { useState, useRef } from "react"
 import React from "react";
 import { Link } from "react-router-dom";
@@ -28,7 +28,7 @@ export const WelcomePage = () => {
 
       {/** background */}
       <div className="w-full flex flex-row justify-center">
-        <div className="absolute bg-back w-[200%] rounded-[100%] h-screen z-10 bottom-[40%] border-[50px] border-wA"></div>
+        <div className="absolute bg-back w-[200%] rounded-[100%] h-screen z-10 bottom-[40%] border-50 border-wA"></div>
       </div>
 
       {/** carousel */}

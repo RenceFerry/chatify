@@ -2,16 +2,17 @@ import { useState, useEffect, createContext } from "react"
 import { Loading } from "./components/loading"
 import { Routes, Route, useNavigate } from "react-router-dom"
 import { WelcomePage } from "./pages/welcomePage";
+import NotFound from "./pages/notFound";
 import Login from "./pages/auth/login";
 import Signup from './pages/auth/signup';
 import Verify from './pages/auth/verify';
-import ProtectedRoutes from "./components/protectedRoutes";
-import UnprotectedRoutes from "./components/unprotectedRoutes";
-import Home from './pages/home/home'
+import ProtectedRoutes from "./pages/protectedRoutes";
+import UnprotectedRoutes from "./pages/unprotectedRoutes";
+import Home from './pages/home/home';
 
 type ThemeContextType = {
   theme: string;
-  setTheme: React.Dispatch<React.SetStateAction<string>>;
+  changeTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
@@ -40,14 +41,14 @@ function App() {
   }
   
   useEffect(() => {
-    document.title = "Chatify";
+    document.title = 'Chatify';
     setTimeout(() => setLoading(false), 1000);
   }, [])
 
   if (!(firstVisit === "false")) navigate('/welcome');
 
   return (
-    <ThemeContext value={{theme, setTheme}}>
+    <ThemeContext.Provider value={{theme, changeTheme}}>
       <div className="w-dvw h-dvh light roboto relative">
         {
           loading ? <Loading /> :
@@ -60,14 +61,16 @@ function App() {
               <Route path="/auth/verify" element={<Verify />} />
             </Route>
             <Route element={<ProtectedRoutes />}>
-              <Route path="/" element={<Home />} />
+              <Route path="/:id/*" element={<Home />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
           </Routes>
         }
-        <button type="button" title="theme" className="absolute bottom-3 left-3 z-50" onClick={changeTheme}>toggle theme</button>
+        <button type="button" title="theme" className="absolute bottom-3 left-3 z-50 text-text" onClick={changeTheme}>toggle theme</button>
       </div>
-    </ThemeContext>
+    </ThemeContext.Provider>
   )
 }
 
 export default App
+export { ThemeContext };

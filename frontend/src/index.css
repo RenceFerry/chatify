@@ -24,42 +24,73 @@
   font-weight: 900;
 }
 
+@custom-variant hover (&:hover);
+
 @theme {
   --color-back: var(--background);
+  --color-hback: var(--hbackground);
   --color-text: var(--text);
+  --color-textB: var(--textB);
+  --color-htextB: var(--htextB);
+  --color-textC: var(--textC);
   --color-blueA: var(--blueA);
+  --color-hblueA: var(--hblueA);
   --color-blueB: var(--blueB);
   --color-blueC: var(--blueC);
+  --color-hblueC: var(--hblueC);
   --color-blueD: var(--blueD);
+  --color-blueE: #1568c3;
+  --color-hblueE: #0943ae;
   --color-wA: var(--wA);
+  --color-hwA: var(--hwA);
   --color-blueF: var(--blueF);
   --color-blueG: var(--blueG);
   --color-blueH: var(--blueH);
   --color-blueI: var(--blueI);
   --color-blueJ: var(--blueJ);
   --color-error: var(--error);
+  --color-bgError: var(--bgError);
+  --color-hbgError: var(--hbgError);
 }
 
 :root.light {
   --background: #fff;
+  --hbackground: #ececec;
   --text: #121212;
+  --textB: #5f5f5f;
+  --htextB: #858383;
+  --textC: #888888;
+  --hblueA: #9bd6f0;
   --blueA: #c4edff;
   --blueB: #a7e4ff;
-  --blueC: #2bbbfb;
+  --blueC: #27a9e0;
+  --hblueC: #1c7da7;
   --blueD: #1568c3;
-  --wA: #ecf9ff;
+  --wA: rgb(226, 230, 231);
+  --hwA: rgb(203, 204, 204);
   --error: oklch(63.7% 0.237 25.331);
+  --bgError: oklch(90.019% 0.05193 18.054);
+  --hbgError: oklch(75.984% 0.05332 18.307);
 }
 
 :root.dark {
   --background: #121212;
+  --hbackground: #272727;
   --text: #f5f5f5;
+  --textB: #b8b8b8;
+  --htextB: #727272;
+  --textC: #999999;
   --blueA: #092a51;
+  --hblueA: #0e396d;
   --blueB: #144d83;
   --blueC: #20b6f9;
+  --hblueC: #1b96cf;
   --blueD: #40c4ff;
   --wA: #2c2d3a;
+  --hwA: #3c3d46;
   --error: oklch(69.242% 0.15146 21.764);
+  --bgError: oklch(30.661% 0.10171 25.527);
+  --hbgError: oklch(40.661% 0.10171 25.527);
 }
 
 .carousel {
@@ -76,4 +107,31 @@ button{
 
 button:disabled{
   cursor: not-allowed;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+}
+
+.textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.textarea::-webkit-scrollbar-button {
+  display: none;
 }

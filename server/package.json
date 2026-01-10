@@ -5,7 +5,7 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch --env-file=.env src/server.ts",
+    "dev": "tsx watch --env-file=.env ./src/server.ts",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -16,15 +16,19 @@
     "@prisma/adapter-pg": "^7.0.1",
     "@prisma/client": "^7.0.1",
     "bcryptjs": "^3.0.3",
+    "cookie": "^1.1.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^7.0.11",
+    "passport": "^0.7.0",
+    "passport-google-oauth2": "^0.2.0",
     "pg": "^8.16.3",
     "redis": "^5.10.0",
     "redis-cli": "^2.1.2",
+    "socket.io": "^4.8.3",
     "tsx": "^4.21.0",
     "zod": "^4.1.13"
   },
@@ -35,6 +39,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.1",
     "@types/nodemailer": "^7.0.4",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth2": "^0.1.10",
     "@types/pg": "^8.15.6",
     "prisma": "^7.0.1",
     "typescript": "^5.9.3"

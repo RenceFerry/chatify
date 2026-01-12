@@ -13,7 +13,8 @@ const createJwt = (req: Request, res: Response) => {
 
   res.cookie('token', token, { httpOnly: true, secure: isproduction, maxAge: 7 * 24 * 60 * 60 * 1000 });
   
-  res.redirect('/');
+  //@ts-ignore
+  res.redirect(`/${req.user?.id}/home`);
 }
 
 router.post('/verify', verify, store, createJwt);

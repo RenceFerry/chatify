@@ -7,7 +7,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {
   authRoutes,
-  authPage
+  authPage,
+  apiRoutes
 } from './routes/export.js'
 import 'dotenv/config';
 import path from 'path';
@@ -19,7 +20,7 @@ import initializeSocket from './socket.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const clientUrl = process.env.CLIENT_URL;
 const isDevelopment = process.env.NODE_ENV === "development";
-const routesRegex = /^(\/profile|\/|\/video|\/chat|\/room)$/;
+const routesRegex = /^\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\/(home|chat)$/;
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -82,13 +83,18 @@ app.use('/auth', authPage);
 
 app.use('/api/auth', authRoutes);
 
-app.use('/not-found', (req: Request, res: Response) => {
-  res.send('404 Not Found');
-});
+app.use('/api', apiRoutes);
 
-app.use((req: Request,res: Response) => {
-  res.redirect('/not-found')
-});
+app.use(authenticate, (req: Request, res: Response) => {
+  const user = req.user!;
+  console.log('hello')
+  //@ts-ignore
+  res.redirect(`/${user?.id}/home`);
+})
 //app routes }
 
 export { passport, server };
+
+// import { createUsers, users } from './lib/utils.js';
+
+// createUsers(users);

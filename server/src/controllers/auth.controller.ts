@@ -167,7 +167,7 @@ export const logout = (req: Request, res: Response) => {
   res.clearCookie('token');
   res.clearCookie('email');
 
-  res.redirect('/login');
+  res.redirect('/auth/login');
 }
 
 //authentication controller
@@ -180,6 +180,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   try {
     const user = jwt.verify(token as string, jwtSecret as string);
 
+    req.user = user as Object;
     next();
   } catch (e) {
     return res.status(401).json({authenticated: false});

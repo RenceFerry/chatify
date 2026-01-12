@@ -5,7 +5,7 @@ export const User = {
     data: { 
       email: string;
       username: string; 
-      password?: string | null; 
+      password?: string; 
       image?: string
     },
     select?: object
@@ -17,7 +17,7 @@ export const User = {
     email: string;
     username: string; 
     password?: string | null;
-    image?: string;
+    image: string | null;
   }) => prisma.users.upsert({
     where: { email: data.email},
     update: {},

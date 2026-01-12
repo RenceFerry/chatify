@@ -15,6 +15,12 @@ type ThemeContextType = {
   changeTheme: () => void;
 }
 
+type IdContextType = {
+  idContext: string | null;
+  changeId: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const IdContext = createContext<IdContextType>({idContext: '', changeId: () => {}});
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 function App() {
@@ -28,6 +34,7 @@ function App() {
   }
   
   const [ theme, setTheme ] = useState(themeStore || (isDark ? "dark" : "light"));
+  const [ idContext, changeId ] = useState<string | null>('');
   const [ loading, setLoading ] = useState(true);
   const html = document.documentElement;
   html.classList.toggle("dark", theme === "dark");
@@ -42,35 +49,51 @@ function App() {
   
   useEffect(() => {
     document.title = 'Chatify';
-    setTimeout(() => setLoading(false), 1000);
+    setTimeout(()=>setLoading(false), 500);
+
+    const getId = async () => {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getId`, {
+        method: 'GET',
+        credentials: 'include',
+      })
+
+      const id = await response.text();
+
+      changeId(id);
+    }
+    getId();
+
   }, [])
 
   if (!(firstVisit === "false")) navigate('/welcome');
 
   return (
     <ThemeContext.Provider value={{theme, changeTheme}}>
-      <div className="w-dvw h-dvh light roboto relative">
-        {
-          loading ? <Loading /> :
-          <Routes>
-            <Route element={<UnprotectedRoutes />}>
-              <Route path='/loading' element={<Loading />} />
-              <Route path="/welcome" element={<WelcomePage />} />
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/auth/signup" element={<Signup />} />
-              <Route path="/auth/verify" element={<Verify />} />
-            </Route>
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/:id/*" element={<Home />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        }
-        <button type="button" title="theme" className="absolute bottom-3 left-3 z-50 text-text" onClick={changeTheme}>toggle theme</button>
-      </div>
+      <IdContext.Provider value={{idContext, changeId}}> 
+        <div className="w-dvw h-dvh light roboto relative">
+          {
+            loading ? <Loading /> :
+            <Routes>
+              <Route element={<UnprotectedRoutes />}>
+                <Route path='/loading' element={<Loading />} />
+                <Route path="/welcome" element={<WelcomePage />} />
+                <Route path="/auth/login" element={<Login />} />
+                <Route path="/auth/signup" element={<Signup />} />
+                <Route path="/auth/verify" element={<Verify />} />
+              </Route>
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/:id/*" element={<Home />} />
+              </Route>
+
+              <Route path="/notFound" element={<NotFound />} />
+            </Routes>
+          }
+          <button type="button" title="theme" className="absolute bottom-3 left-3 z-50 text-text" onClick={changeTheme}>toggle theme</button>
+        </div>
+      </IdContext.Provider>
     </ThemeContext.Provider>
   )
 }
 
 export default App
-export { ThemeContext };
+export { ThemeContext, IdContext };

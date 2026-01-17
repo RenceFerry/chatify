@@ -1,10 +1,30 @@
 import { FaCheckDouble } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { type ChatType } from "../../pages/home/chatPage";
 import clsx from 'clsx';
+import { IoPersonCircleSharp } from "react-icons/io5";
+import { formatMessageTime } from "../../utils/helpers";
 
-const ChatCard = ({ img, name, unread, person, lstMessage, date, convoId }: { img: string, name: string, person: string, unread: number, lstMessage: string, date: string, convoId: string }) => {
+const ChatCard = ({chat}: {chat: ChatType}) => {
   const { id } = useParams();
+  const { image: img, messages, participants, id: convoId } = chat; 
+
+  let me, friend;
+  if (participants[0].userId === id) {
+    me = participants[0];
+    friend = participants[1];
+  } else {
+    me = participants[1];
+    friend = participants[0]; 
+  }
+
+  const date = messages[0] ? formatMessageTime(messages[0]?.createdAt.toISOString()) : '';
+  const sender = messages[0] ? messages[0].sender.id === id ? 'You:' : friend.user.username.split(' ')[0] + ':' : '';
+  const unread = me.unreadCount;
+  const name = friend.user.username.split(' ')[0];
+  const lstMessage = messages[0] ? messages[0].content: `Begin Conversation with ${name}`;
+
 
   const navigate = useNavigate();
   const handleChatClick = () => {
@@ -15,7 +35,13 @@ const ChatCard = ({ img, name, unread, person, lstMessage, date, convoId }: { im
     <div onClick={handleChatClick} className='w-full flex flex-row h-14 items-center justify-between gap-2 px-2 hover:bg-hback rounded-lg'>
       {/** profilePic */}
       <div className='h-10 w-10'>
-        <img src={img} alt='profile' className='h-full w-full rounded-full object-cover'/>
+        {
+          img ? 
+          <img src={img} alt='profile' className='h-full w-full rounded-full object-cover'/> :
+          friend.user.image ?
+          <img src={friend.user.image} alt='profile' className='h-full w-full rounded-full object-cover'/> :
+          <IoPersonCircleSharp className="h-full w-full text-textB" />
+        }
       </div>
 
       {/** name and last message */}
@@ -29,7 +55,7 @@ const ChatCard = ({ img, name, unread, person, lstMessage, date, convoId }: { im
         </div>
 
         <div className='flex flex-1 flex-row items-center justify-between'>
-          <p className='text-textB truncate font-semibold text-xs w-48 md:w-96'><span className='text-blueD'>{person}</span>: {lstMessage}</p>
+          <p className='text-textB truncate font-semibold text-xs w-48 md:w-96'><span className='text-blueD'>{sender}</span> {lstMessage}</p>
           <div className={clsx('grid items-center px-1 rounded-sm', {
             'bg-none': unread === 0,
             'bg-blueB': unread > 0

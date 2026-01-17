@@ -4,6 +4,48 @@ import InputBottom from "../../components/chats/chatPage/inputBottom";
 import { useParams } from "react-router-dom";
 import type { RefObject } from "react";
 
+export type ChatType = ({
+    participants: ({
+        user: {
+            id: string;
+            image: string | null;
+            created_at: Date;
+            username: string;
+            password: string | null;
+            email: string;
+        };
+    } & {
+        id: string;
+        conversationId: string;
+        lastReadAt: Date | null;
+        unreadCount: number;
+        userId: string;
+    })[];
+    messages: ({
+        sender: {
+            id: string;
+            image: string | null;
+            created_at: Date;
+            username: string;
+            password: string | null;
+            email: string;
+        };
+    } & {
+        id: string;
+        createdAt: Date;
+        content: string;
+        senderId: string;
+        conversationId: string;
+    })[];
+} & {
+    id: string;
+    createdAt: Date;
+    name: string;
+    image: string | null;
+    type: 'PRIVATE' | 'GROUP';
+    lastMessageAt: Date;
+})
+
 const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
   const {id} = useParams();
 

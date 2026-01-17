@@ -8,7 +8,8 @@ import cookieParser from 'cookie-parser';
 import {
   authRoutes,
   authPage,
-  apiRoutes
+  apiRoutes,
+  serverActionRoutes
 } from './routes/export.js'
 import 'dotenv/config';
 import path from 'path';
@@ -83,11 +84,12 @@ app.use('/auth', authPage);
 
 app.use('/api/auth', authRoutes);
 
+app.use('/api/serverActions', serverActionRoutes);
+
 app.use('/api', apiRoutes);
 
 app.use(authenticate, (req: Request, res: Response) => {
   const user = req.user!;
-  console.log('hello')
   //@ts-ignore
   res.redirect(`/${user?.id}/home`);
 })

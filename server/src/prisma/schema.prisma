@@ -10,6 +10,11 @@ datasource db {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 
+enum ConvoType {
+  PRIVATE
+  GROUP
+}
+
 model users {
   created_at DateTime @default(now()) @db.Timestamptz(6)
   username   String
@@ -18,38 +23,42 @@ model users {
   email      String   @unique
   id         String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
-  conversations  conversationParticipant[]
-  messages       message[]
+  conversations  ConversationParticipant[]
+  messages       Message[]
 }
 
-model conversation {
+model Conversation {
   id         String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt  DateTime @default(now()) @db.Timestamptz(6)
   name       String
+  image      String?
+  type       ConvoType  @default(PRIVATE)
+  lastMessageAt DateTime @default(now())
 
   // Relations
-  participants conversationParticipant[]
-  messages     message[]
+  participants ConversationParticipant[]
+  messages     Message[]
 
   @@map("conversations")
 }
 
-model conversationParticipant {
+model ConversationParticipant {
   id              String  @id @unique @default(dbgenerated("gen_random_uuid()"))  @db.Uuid
   userId          String  @db.Uuid
   conversationId  String  @db.Uuid
   lastReadAt      DateTime?
+  unreadCount     Int     @default(0)
 
   // Relations
   user            users          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  conversation    conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@unique([userId, conversationId])
   @@index([conversationId])
   @@map("conversation_participants")
 }
 
-model message {
+model Message {
   id             String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   content        String
   createdAt      DateTime @default(now()) @db.Timestamptz(6)
@@ -59,7 +68,7 @@ model message {
 
   // Relations
   sender          users          @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  conversation    conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversation    Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId])
   @@index([senderId])

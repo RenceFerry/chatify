@@ -20,7 +20,6 @@ const HomeWrapper = ({tabRef}: {tabRef: RefObject<string | null>}) => {
   useEffect(() => {
     const handleResize = () => {
       setIsMediumScreen(window.innerWidth > 768);
-      console.log(window.innerWidth >= 768);
     };
 
     handleResize();

@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { Routes, Route, Outlet } from 'react-router-dom';
 import ChatPage from './chatPage';
 import HomeWrapper from './homeWrapper';
+import AddPeople from './addPeople';
+import CreateGroup from './createGroup';
 
 const Home = () => {
   const tab = useRef(null);
@@ -22,6 +24,8 @@ const Home = () => {
       <Routes>
         <Route path="/chat" element={<ChatPage tabRef={tab} />} />
         <Route path="/home" element={<HomeWrapper tabRef={tab} />} />
+        <Route path="/createGroup" element={<CreateGroup tabRef={tab} />} />
+        <Route path="/addPeople" element={<AddPeople tabRef={tab} />} />
       </Routes>
     </div>
   )

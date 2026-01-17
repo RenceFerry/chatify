@@ -16,7 +16,7 @@ const TopMenu = ({id, tabRef}: {id: string | undefined, tabRef: RefObject<string
   return (
     <div className="flex flex-col h-22 pb-2 w-full gap-2 px-5 shadow-[0_4px_6px_1px_rgba(0,0,0,0.01)] shadow-wA">
       <div className="flex fle-row justify-between items-center flex-1">
-        <button onClick={handleBack} type="button" title="more" className="h-8 w-8 hover:bg-hback rounded-full shadow-[0_2px_6px_1px_rgba(0,0,0,0.01)] shadow-wA">
+        <button onClick={handleBack} type="button" title="back" className="h-8 w-8 hover:bg-hback rounded-full shadow-[0_2px_6px_1px_rgba(0,0,0,0.01)] shadow-wA">
           <IoArrowBackSharp className="text-2xl m-auto cursor-pointer text-text"/>
         </button>
         <h1 className="text-md font-semibold text-text">Messages</h1>
@@ -38,7 +38,7 @@ const TopMenu = ({id, tabRef}: {id: string | undefined, tabRef: RefObject<string
             <IoVideocamOutline className="text-2xl m-auto cursor-pointer text-text"/>
           </button>
 
-          <button type="button" title="video call" className="hover:bg-hback rounded-full h-8 w-8">
+          <button type="button" title="audio call" className="hover:bg-hback rounded-full h-8 w-8">
             <FiPhone className="text-xl m-auto cursor-pointer text-text"/>
           </button>
         </div>

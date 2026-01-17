@@ -179,7 +179,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
   try {
     const user = jwt.verify(token as string, jwtSecret as string);
-
+    
     req.user = user as Object;
     next();
   } catch (e) {

@@ -12,7 +12,7 @@ const CreateGroup = ({tabRef}: {tabRef: RefObject<string | null>}) => {
       <TopSection id={userContext!.id} tabRef={tabRef} onSearch={setQuery} />
       
       <div className="flex flex-1 flex-col w-full justify-center items-center bg-wA overflow-scroll no-scrollbar">
-        <FriendsList query={query} />
+        <FriendsList tabRef={tabRef} query={query} />
       </div>
     </div>
   )

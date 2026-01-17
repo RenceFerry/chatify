@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { UsersListSkeleton } from '../../components/skeleton';
 import { IoPersonCircleSharp } from "react-icons/io5";
+import type { RefObject } from 'react';
 
-const FriendsList = ({query}: {query: string}) => {
+const FriendsList = ({query, tabRef}: {tabRef: RefObject<string>, query: string}) => {
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getFriends', query],
     queryFn: async () => {

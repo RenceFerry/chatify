@@ -5,9 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useContext } from "react";
 
-
-
-const PeoplesList = ({query}: {query: string}) => {
+const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string>, query: string}) => {
   const navigate = useNavigate();
   const { userContext } = useContext(UserContext);
   console.log(userContext);
@@ -52,6 +50,7 @@ const PeoplesList = ({query}: {query: string}) => {
       return;
     } 
 
+    tabRef.current = 'chats';
     navigate(`/${userContext?.id}/chat?convo=${convo.id}`);
   }
 

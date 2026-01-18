@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import {prisma} from '../lib/prisma.js'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client.js';
 
 export const getUser = (req: Request, res: Response) => {
   const user = req.user;
@@ -218,5 +219,41 @@ export const getGroupsList = async (req: Request, res: Response) => {
 
   } catch (e) {
     return res.status(500).json({ error: 'Server Error' });
+  }
+}
+
+export const getMessages = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const {id} = req.user;
+  const {convoId} = req.body || '';
+
+  if (!convoId) return res.status(400).json({ error: 'invalid conversation id'});
+
+  try{
+    const messages = await prisma.conversation.findUniqueOrThrow({
+      where: {
+        id: convoId,
+        participants: {
+          some: {
+            userId: id
+          }
+        }
+      },
+      include: {
+        messages: {
+          take: 30,
+          orderBy: {
+            createdAt: 'asc'
+          }
+        }
+      }
+    })
+
+    res.status(200).json(messages);
+  }catch (e) {
+    if (e instanceof PrismaClientKnownRequestError) {
+      return res.status(400).json({ error: 'conversation doesnt exist'})
+    }
+    return res.status(500).json({ error: 'server error'});
   }
 }

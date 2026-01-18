@@ -2,6 +2,7 @@ import logo from '../assets/logo.png';
 import { CiSearch } from "react-icons/ci";
 import { GoPlus } from "react-icons/go";
 import { useState, useContext, useMemo, useCallback } from 'react';
+import { useRef } from 'react';
 import clsx from 'clsx';
 import { Link, useSearchParams } from 'react-router-dom';
 import { UserContext } from '../App';
@@ -13,6 +14,7 @@ const TopTab = ({onSearch}: { onSearch: (tab: string, value: string) => void }) 
   const { userContext } = useContext(UserContext);
   const [searchParams] = useSearchParams();
   const tab = searchParams.get('tab');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = useCallback((value: string) => {
     onSearch(tab!, value);
@@ -22,6 +24,12 @@ const TopTab = ({onSearch}: { onSearch: (tab: string, value: string) => void }) 
     debounce(onChange, 500),
     [onChange]
   )
+
+  const handleSearchButtonClick = () => {
+    if (inputRef.current) inputRef.current.value = '';
+    onSearch('chats', '');
+    onSearch('groups', '');
+  }
 
   return (
     <div className="w-full flex flex-row items-center justify-between h-12 bg-blueE md:h-16 relative">
@@ -35,10 +43,10 @@ const TopTab = ({onSearch}: { onSearch: (tab: string, value: string) => void }) 
 
       <div className="flex flex-row mr-4 gap-2 justify-center items-center h-[60%]">
         {showSearch && 
-          <input type="text" onChange={(e)=>debounceWr(e.target.value)} title='search' className='border-none outline-none rounded-lg bg-blueC h-full p-3 text-back' placeholder='Search chats....' />
+          <input ref={inputRef} type="text" onChange={(e)=>debounceWr(e.target.value)} title='search' className='border-none outline-none rounded-lg bg-blueC h-full p-3 text-back' placeholder='Search chats....' />
         }
 
-        <button title='search' className='bg-blueE h-full p-1 rounded-md hover:bg-hblueE' onClick={() => setShowSearch(!showSearch)} type='button'>
+        <button title='search' className='bg-blueE h-full p-1 rounded-md hover:bg-hblueE' onClick={() => {handleSearchButtonClick();setShowSearch(!showSearch)}} type='button'>
           {showSearch ? <GoPlus size={24} color='white' className='rotate-45' /> :
             <CiSearch size={24} color='white' />
           }

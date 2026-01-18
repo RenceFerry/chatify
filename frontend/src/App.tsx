@@ -8,31 +8,9 @@ import Verify from './pages/auth/verify';
 import ProtectedRoutes from "./pages/protectedRoutes";
 import UnprotectedRoutes from "./pages/unprotectedRoutes";
 import Home from './pages/home/home';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false
-    }
-  }
-})
-
-type ThemeContextType = {
-  theme: string;
-  changeTheme: () => void;
-}
-
-type UserType = {
-  username: string;
-  id: string;
-  email: string;
-}
-
-type UserContextType = {
-  userContext: UserType | null;
-  changeUser: React.Dispatch<React.SetStateAction<UserType | null>>;
-}
+import { QueryClientProvider } from '@tanstack/react-query';
+import type { UserContextType, ThemeContextType, UserType } from "./lib/types";
+import { queryClient } from "./lib/tansStackQuery";
 
 const UserContext = createContext<UserContextType>({
   userContext: null,

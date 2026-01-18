@@ -1,7 +1,7 @@
 import Messages from "../../components/chats/chatPage/messages";
 import TopMenu from "../../components/chats/chatPage/topMenu";
 import InputBottom from "../../components/chats/chatPage/inputBottom";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams, useSearchParams } from "react-router-dom";
 import type { RefObject } from "react";
 
 export type ChatType = ({
@@ -48,6 +48,10 @@ export type ChatType = ({
 
 const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
   const {id} = useParams();
+  const [searchParams] = useSearchParams();
+  const convoId = searchParams.get('convoId');
+
+  if (!convoId) return <Navigate to={`/${id}/home?tab=chats`} />;
 
   return (
     <div className="w-full h-full flex flex-col justify-between items-center bg-back pt-2">
@@ -55,7 +59,7 @@ const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
       <TopMenu id={id} tabRef={tabRef} />
 
       {/** chat area */}
-      <Messages />
+      <Messages convoId={convoId} />
 
       {/** input area */}
       <InputBottom />

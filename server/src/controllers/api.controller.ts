@@ -149,5 +149,74 @@ export const getChatsList = async (req: Request, res: Response) => {
   } catch (e) {
     return res.status(500).json({ error: 'Server Error' });
   }
+}
 
+export const getGroupsList = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const { id } = req.user;
+  let { search } = req.body;
+
+  if (!search) search = '';
+
+  try {
+    const chats = await prisma.conversation.findMany({
+      where: {
+        type: 'GROUP',
+        AND: [
+          {
+            participants: {
+              some: {
+                userId: id
+              }
+            },
+          },
+          {
+            OR: [
+              {
+                participants: {
+                  some: {
+                    userId: { not: id},
+                    user: {
+                      username: {contains: search, mode: 'insensitive'}
+                    }
+                  }
+                }
+              },
+              {
+                name: {
+                  contains: search,
+                  mode: 'insensitive'
+                }
+              }
+            ]
+          }
+        ]
+      },
+      take: 25,
+      orderBy: {
+        lastMessageAt: 'desc'
+      },
+      include: {
+        participants: {
+          include: {
+            user: true,
+          }
+        },
+        messages: {
+          take: 1,
+          orderBy: {
+            createdAt: 'desc'
+          },
+          include: {
+            sender: true
+          }
+        }
+      }
+    })
+
+    return res.status(200).json(chats);
+
+  } catch (e) {
+    return res.status(500).json({ error: 'Server Error' });
+  }
 }

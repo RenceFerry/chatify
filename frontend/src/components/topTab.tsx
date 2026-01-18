@@ -1,15 +1,27 @@
 import logo from '../assets/logo.png';
 import { CiSearch } from "react-icons/ci";
 import { GoPlus } from "react-icons/go";
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo, useCallback } from 'react';
 import clsx from 'clsx';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { UserContext } from '../App';
+import debounce from 'debounce';
 
-const TopTab = () => {
+const TopTab = ({onSearch}: { onSearch: (tab: string, value: string) => void }) => {
   const [ showAddCreate, setShowAddCreate ] = useState(false);
   const [ showSearch, setShowSearch ] = useState(false);
   const { userContext } = useContext(UserContext);
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get('tab');
+
+  const onChange = useCallback((value: string) => {
+    onSearch(tab!, value);
+  },[onSearch, tab])
+
+  const debounceWr = useMemo(()=>
+    debounce(onChange, 500),
+    [onChange]
+  )
 
   return (
     <div className="w-full flex flex-row items-center justify-between h-12 bg-blueE md:h-16 relative">
@@ -23,7 +35,7 @@ const TopTab = () => {
 
       <div className="flex flex-row mr-4 gap-2 justify-center items-center h-[60%]">
         {showSearch && 
-          <input type="text" title='search' className='border-none outline-none rounded-lg bg-blueC h-full p-3 text-back' placeholder='Search chats....' />
+          <input type="text" onChange={(e)=>debounceWr(e.target.value)} title='search' className='border-none outline-none rounded-lg bg-blueC h-full p-3 text-back' placeholder='Search chats....' />
         }
 
         <button title='search' className='bg-blueE h-full p-1 rounded-md hover:bg-hblueE' onClick={() => setShowSearch(!showSearch)} type='button'>

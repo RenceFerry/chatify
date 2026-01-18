@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Server } from 'socket.io';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
+import redis from './lib/redis';
 
 const jwtSecret = process.env.JWT_SECRET!;
 
@@ -22,8 +23,29 @@ const initializeSocket = (io: Server) => {
     }
   });
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     console.log('a user connects ' + socket.id);
+    const user = socket.data.user;
+    socket.join(user.id);
+    const key = `presence:user:${user.id}`
+
+    // for automatic active inactive status
+    await redis.set(key, JSON.stringify({online: true}), { expiration: { type: 'EX', value: 300 } })
+
+    const interval = setInterval(async ()=>{
+      await redis.set(key, JSON.stringify({ online: true}), { expiration: { type: 'EX', value: 300}});
+    })
+    //
+
+    socket.on('conversation:open', (convoId) => {
+      socket.join(convoId);
+    })
+
+
+
+    socket.on('disconnect', () => {
+      clearInterval(interval);
+    })
   });
 };
 

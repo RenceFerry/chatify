@@ -80,6 +80,52 @@ export const createConvo = async (req: Request, res: Response) => {
   } catch (e) {
     return res.status(500).json({ error: 'Conversation Creation Failed'});
   }
+}
 
+export const createGroup = async (req: Request, res: Response) => {
+  const participants: {
+    user: {
+      username: string,
+      id: string,
+      email: string
+    },
+    toFriend: {
+      username: string,
+      id: string,
+      email: string
+    }
+  } = req.body;
 
+  if (!participants) return res.status(400).json({ error: 'Invalid Group Participants'});
+
+  try {
+    const group = await prisma.conversation.create({
+      data: {
+        type: 'GROUP',
+        name: `${participants.user.username} and ${participants.toFriend.username}`,
+        participants: {
+          create: [
+            {
+              user: {
+                connect: {
+                  id: participants.user.id
+                }
+              }
+            },
+            {
+              user: {
+                connect: {
+                  id: participants.toFriend.id
+                }
+              }
+            }
+          ]
+        }
+      }
+    })
+
+    return  res.status(201).json(group);
+  } catch (e) {
+    return res.status(500).json({ error: 'Conversation Creation Failed'});
+  }
 }

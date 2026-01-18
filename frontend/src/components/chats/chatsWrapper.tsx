@@ -1,14 +1,12 @@
 import ChatCard from "./chatCard";
-import React, { useContext } from "react";
+import React from "react";
 import { useQuery } from '@tanstack/react-query'
 import { ChatCardsSkeleton } from "../../components/skeleton";
-import { UserContext } from '../../App';
 import { type ChatType } from "../../pages/home/chatPage";
 
-const ChatsWrapper = () => {
-  const { userContext } = useContext(UserContext);
+const ChatsWrapper = ({ query }: { query: string }) => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['retrieveChats', userContext!.id],
+    queryKey: ['retrieveChats', query],
     queryFn: async () => {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getChatsList`, {
         method: 'POST',
@@ -16,19 +14,24 @@ const ChatsWrapper = () => {
           'Content-Type': 'application/json'
         },
         credentials: 'include',
+        body: JSON.stringify({ search: query })
       })
       if (!res.ok) throw new Error();
       return res.json();
     }
   })
 
-  if (isLoading) return <ChatCardsSkeleton />;
+  if ( isLoading ) return <ChatCardsSkeleton />;
 
   return (
-    <div className='flex-1 flex w-full h-full flex-col justify-start items-center gap-3 p-4'>
+    <div className='flex w-full h-full flex-col justify-start items-center gap-3 p-4 overflow-scroll no-scrollbar'>
       {
         isError ? 
-        <h1>Error Fetching Chats</h1> :
+        <h1 className="text-xl text-textB">Error Fetching Groups</h1> : 
+        data.length===0 && !query ?
+        <h1 className="text-xl text-textB">No chats exist</h1> : 
+        data.length===0 && query ?
+        <h1 className="text-xl text-textB">No match results</h1> :
         data.map((chat: ChatType, index: number) => (
         <React.Fragment key={index}>
           <ChatCard

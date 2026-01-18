@@ -10,6 +10,7 @@ const Home = () => {
   const tab = useRef(null);
   
   useEffect(() => {
+    
     socket.connect();
 
     return () => {

@@ -1,9 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { UsersListSkeleton } from '../../components/skeleton';
 import { IoPersonCircleSharp } from "react-icons/io5";
-import type { RefObject } from 'react';
+import { type RefObject, useContext } from 'react';
+import { UserContext } from '../../App';
+import { useNavigate } from 'react-router-dom';
 
-const FriendsList = ({query, tabRef}: {tabRef: RefObject<string>, query: string}) => {
+const FriendsList = ({query, tabRef}: {tabRef: RefObject<string | null>, query: string}) => {
+  const {userContext} = useContext(UserContext);
+  const navigate = useNavigate();
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getFriends', query],
     queryFn: async () => {
@@ -20,12 +24,38 @@ const FriendsList = ({query, tabRef}: {tabRef: RefObject<string>, query: string}
     }
   })
 
+  const handleClick = async ({id, username, email}: {email: string, username: string, id: string}) => {
+    let group;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/serverActions/createGroup`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          user: userContext,
+          toFriend: {id, username, email}
+        })
+      })
+      if (!res.ok) throw new Error();
+      
+      group = await res.json();
+    } catch (e) {
+      console.log(e);
+      return;
+    } 
+
+    tabRef.current = 'groups';
+    return navigate(`/${userContext?.id}/chat?convoId=${group.id}`);
+  }
+
   if (isLoading) return <UsersListSkeleton />;
 
   return (
-    <div className="w-[90%] max-w-[500px] flex-1 flex flex-col justify-start py-4 items-center gap-3 overflow-hidden">
-      { !isError ? data.length > 0 ? (data.map(({username, image, id}: { username: string, id: string, image: string}) => (
-        <div key={id} className="bg-back w-full h-14 rounded-lg md:h-16 flex flex-row items-center justify-start pl-4 gap-4">
+    <div className="w-[90%] max-w-[500px] flex-1 flex flex-col justify-start items-center gap-3 py-4">
+      { !isError ? data.length > 0 ? (data.map(({username, image, id, email}: { username: string, id: string, image: string, email: string}) => (
+        <div key={id} onClick={()=>handleClick({username, email, id})} className="bg-back w-full h-14 rounded-lg md:h-16 flex flex-row items-center justify-start pl-4 gap-4">
           <div className="rounded-full h-8 md:h-10 w-8 md:w-10 bg-back overflow-hidden">
             {
               !image ? 

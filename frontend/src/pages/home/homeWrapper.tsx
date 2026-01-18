@@ -12,10 +12,17 @@ import { clsx } from "clsx";
 const TABS_REGEX = /^(chats|groups|profile|more)$/;
 
 const HomeWrapper = ({tabRef}: {tabRef: RefObject<string | null>}) => {
+  const [ chatQuery, setChatQuery ] = useState('');
+  const [ groupQuery, setGroupQuery ] = useState('');
   const [ SearchParams, setSearchParams ] = useSearchParams();
   const [ editProfileIsOpen, setEditProfileIsOpen ] = useState(false);
   const [ isMediumScreen, setIsMediumScreen ] = useState(false);
   const activeTab = SearchParams.get('tab');
+  
+  const onQuery = (tab: string, value: string) => {
+    if (tab==='chats') setChatQuery(value);
+    else setGroupQuery(value);
+  }
   
   useEffect(() => {
     const handleResize = () => {
@@ -41,14 +48,14 @@ const HomeWrapper = ({tabRef}: {tabRef: RefObject<string | null>}) => {
       <div className={clsx('flex flex-col justify-between items-center w-full h-full', {
         'brightness-50 pointer-events-none': editProfileIsOpen && !isMediumScreen,
       })}>
-        <TopTab />
-        <div className='flex-1 flex flex-col items-center justify-between w-full md:flex-row-reverse md:items-start md:justify-start'>
-          <div className='flex-1 flex flex-col justify-center items-center w-full md:flex-5 md:h-full md:relative bg-back'>
+        <TopTab onSearch={onQuery} />
+        <div className='flex-1 flex flex-col items-center justify-between w-full md:flex-row-reverse md:items-start md:justify-start  overflow-scroll no-scrollbar'>
+          <div className='flex-1 flex flex-col justify-center items-center w-full md:flex-5 md:h-full md:relative bg-back overflow-scroll no-scrollbar'>
             <div className={clsx('flex w-full h-full bg-back',{
               'brightness-50 pointer-events-none': editProfileIsOpen && isMediumScreen,
             })}>
-              {activeTab === 'chats' && <ChatsWrapper />}
-              {activeTab === 'groups' && <GroupsWrapper />}
+              {activeTab === 'chats' && <ChatsWrapper query={chatQuery} />}
+              {activeTab === 'groups' && <GroupsWrapper query={groupQuery} />}
               {activeTab === 'profile' && <Profile setIsOpen={setEditProfileIsOpen} />}
               {activeTab === 'more' && <More />}
             </div>

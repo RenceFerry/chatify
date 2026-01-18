@@ -22,8 +22,9 @@ const ChatCard = ({chat}: {chat: ChatType}) => {
   const date = messages[0] ? formatMessageTime(messages[0]?.createdAt.toISOString()) : '';
   const sender = messages[0] ? messages[0].sender.id === id ? 'You:' : friend.user.username.split(' ')[0] + ':' : '';
   const unread = me.unreadCount;
-  const name = friend.user.username.split(' ')[0];
+  const name = chat.type === 'PRIVATE' ? friend.user.username.split(' ')[0] : chat.name + (participants.length>2 ? ' and others': '');
   const lstMessage = messages[0] ? messages[0].content: `Begin Conversation with ${name}`;
+  const isPrivate = chat.type === 'PRIVATE';
 
 
   const navigate = useNavigate();
@@ -32,13 +33,13 @@ const ChatCard = ({chat}: {chat: ChatType}) => {
   }
 
   return (
-    <div onClick={handleChatClick} className='w-full flex flex-row h-14 items-center justify-between gap-2 px-2 hover:bg-hback rounded-lg'>
+    <div onClick={handleChatClick} className='w-full flex flex-row py-2 items-center justify-between gap-2 px-2 hover:bg-hback rounded-lg'>
       {/** profilePic */}
       <div className='h-10 w-10'>
         {
           img ? 
           <img src={img} alt='profile' className='h-full w-full rounded-full object-cover'/> :
-          friend.user.image ?
+          friend.user.image && isPrivate ?
           <img src={friend.user.image} alt='profile' className='h-full w-full rounded-full object-cover'/> :
           <IoPersonCircleSharp className="h-full w-full text-textB" />
         }

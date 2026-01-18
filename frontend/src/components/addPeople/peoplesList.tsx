@@ -5,10 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useContext } from "react";
 
-const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string>, query: string}) => {
+const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string | null>, query: string}) => {
   const navigate = useNavigate();
   const { userContext } = useContext(UserContext);
-  console.log(userContext);
   const { data, isError, isLoading } = useQuery({
     queryKey: ['searchPeople', query],
     queryFn: async () => {
@@ -41,7 +40,6 @@ const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string>, query: s
           toFriend: {id, username, email}
         })
       })
-      console.log(res.ok)
       if (!res.ok) throw new Error();
       
       convo = await res.json();
@@ -51,7 +49,7 @@ const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string>, query: s
     } 
 
     tabRef.current = 'chats';
-    navigate(`/${userContext?.id}/chat?convo=${convo.id}`);
+    navigate(`/${userContext?.id}/chat?convoId=${convo.id}`);
   }
 
   return (

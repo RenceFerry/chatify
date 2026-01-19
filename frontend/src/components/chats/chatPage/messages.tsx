@@ -37,6 +37,7 @@ const Messages = ({convoId}: {convoId: string}) => {
         },
         body: JSON.stringify({ convoId })
       })
+      console.log(res.status)
       if (!res.ok) throw new Error();
 
       return res.json();
@@ -73,7 +74,7 @@ const Messages = ({convoId}: {convoId: string}) => {
       {
         isError ?
         <h1 className='text-xl text-textB'>Failed to Fetch Messages</h1> :
-        messages?.length === 0 ?
+        !messages ?
         <h1 className='text-xl text-textB'>Start Chatting</h1> :
         messages?.map((message, index) => (
           <div key={index} className={clsx('max-w-[70%] my-1 p-2 rounded-xl flex flex-col text-sm md:text-lg', {

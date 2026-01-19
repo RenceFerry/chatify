@@ -27,7 +27,7 @@ const ChatsWrapper = ({ query }: { query: string }) => {
     <div className='flex w-full h-full flex-col justify-start items-center gap-3 p-4 overflow-scroll no-scrollbar'>
       {
         isError ? 
-        <h1 className="text-xl text-textB">Error Fetching Groups</h1> : 
+        <h1 className="text-xl text-textB">Error Fetching Chats</h1> : 
         data.length===0 && !query ?
         <h1 className="text-xl text-textB">No chats exist</h1> : 
         data.length===0 && query ?

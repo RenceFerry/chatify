@@ -2,12 +2,16 @@ import { IoArrowBackSharp } from "react-icons/io5";
 import { PiDotsThreeOutlineLight } from "react-icons/pi";
 import { IoVideocamOutline } from "react-icons/io5";
 import { FiPhone } from "react-icons/fi";
-import logo from '../../../assets/logo.png';
 import { useNavigate } from "react-router-dom";
 import { type RefObject } from "react";
+import type { ConversationWithMessagesType } from "../../../pages/home/chatPage";
+import { IoPersonCircleSharp } from "react-icons/io5";
 
-const TopMenu = ({id, tabRef}: {id: string | undefined, tabRef: RefObject<string | null> }) => {
+const TopMenu = ({data, id, tabRef}: {data: ConversationWithMessagesType | undefined, id: string | undefined, tabRef: RefObject<string | null> }) => {
   const navigate = useNavigate();
+  const isPrivate = data?.type === 'PRIVATE';
+  const name = isPrivate ? data.participants[0].user.id === id ? data.participants[1].user.username : data.participants[0].user.username : data?.name;
+  const image = isPrivate ? data.participants[0].user.id === id ? data.participants[1].user.image : data.participants[0].user.image : data?.image;
 
   const handleBack = () => {
     navigate(`/${id}/home?tab=${tabRef.current}`)
@@ -27,10 +31,14 @@ const TopMenu = ({id, tabRef}: {id: string | undefined, tabRef: RefObject<string
 
       <div className="flex flex-row justify-between items-center flex-1">
         <div className="flex flex-row justify-center gap-3 items-center ml-5 cursor-pointer">
-          <div className="rounded-full h-8 w-8 overflow-hidden">
-            <img src={logo} alt='profile pic' className="object-cover"/>
+          <div className="rounded-full h-8 w-8 md:h-10 md:w-10 overflow-hidden bg-blueB">
+            {
+              image ?
+              <img src={image} alt='profile pic' className="object-cover"/> :
+              <IoPersonCircleSharp className="h-full w-full text-textB" />
+            }
           </div>
-          <h2 className="text-blueD text-md font-semibold">John Doe</h2>
+          <h2 className="text-blueD text-md md:text-xl font-semibold">{name}</h2>
         </div>
 
         <div className="flex flex-row gap-3 items-center justify-center mr-5">

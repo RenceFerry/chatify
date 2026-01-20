@@ -235,7 +235,7 @@ export const getMessages = async (req: Request, res: Response) => {
   if (!convoId) return res.status(400).json({ error: 'invalid conversation id'});
   
   const valid = Uiid.safeParse(convoId);
-  if (valid.success) return res.status(400).json({ error: 'invalid conversation id'});
+  if (!valid.success) return res.status(400).json({ error: 'invalid conversation id'});
 
   try{
     const messages = await prisma.conversation.findUnique({
@@ -253,10 +253,14 @@ export const getMessages = async (req: Request, res: Response) => {
           orderBy: {
             createdAt: 'asc'
           }
+        },
+        participants: {
+          include: {
+            user: true
+          }
         }
       }
     })
-
     res.status(200).json(messages);
   }catch (e) {
     return res.status(500).json({ error: 'server error'});

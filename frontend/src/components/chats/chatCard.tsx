@@ -35,7 +35,7 @@ const ChatCard = ({chat}: {chat: ChatType}) => {
   return (
     <div onClick={handleChatClick} className='w-full flex flex-row py-2 items-center justify-between gap-2 px-2 hover:bg-hback rounded-lg'>
       {/** profilePic */}
-      <div className='h-10 w-10'>
+      <div className='h-10 w-10 bg-blueB rounded-full overflow-hidden'>
         {
           img ? 
           <img src={img} alt='profile' className='h-full w-full rounded-full object-cover'/> :

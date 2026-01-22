@@ -10,26 +10,17 @@ const ProtectedRoutes = () => {
   const {userContext, changeUser} = useContext(UserContext);
 
   useEffect(() => {
-    const authenticate = async () => {
-      const result = await fetch(`${BACKEND_URL}/api/auth/authenticate`, {
-        method: 'POST',
-        credentials: 'include',
-      })
-
-      return result.ok;
-    }
-
     const getId = async () => {
-      const isAuthenticate = await authenticate();
-
       const response = await fetch(`${BACKEND_URL}/api/getUser`, {
         method: 'POST',
         credentials: 'include',
       })
 
-      if (!response.ok || !isAuthenticate) {
+      if (!response.ok) {
         setLoading(false);
         setValid(false);
+
+        return;
       }
       const user = await response.json();
 

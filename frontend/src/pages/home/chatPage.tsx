@@ -9,6 +9,7 @@ import {socket} from '../../lib/socket';
 import { queryClient } from "../../lib/tansStackQuery";
 import { UserContext } from "../../App";
 import { generateRandomNumber } from "../../utils/helpers";
+import { BACKEND_URL } from "../../utils/helpers";
 
 export type ChatType = ({
     participants: ({
@@ -88,7 +89,7 @@ const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
   const {data, isError, isLoading} = useQuery<ConversationWithMessagesType>({
     queryKey: ['getMessages', convoId],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getMessages`, {
+      const res = await fetch(`${BACKEND_URL}/api/getMessages`, {
         method: 'POST',
         credentials: 'include',
         headers: {

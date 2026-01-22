@@ -5,12 +5,13 @@ import { ChatCardsSkeleton } from "../../components/skeleton";
 import { type ChatType } from "../../pages/home/chatPage";
 import { socket } from "../../lib/socket";
 import { queryClient } from "../../lib/tansStackQuery";
+import { BACKEND_URL } from "../../utils/helpers";
 
 const ChatsWrapper = ({ query }: { query: string }) => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ['retrieveChats', query],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getChatsList`, {
+      const res = await fetch(`${BACKEND_URL}/api/getChatsList`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

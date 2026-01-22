@@ -3,12 +3,13 @@ import { useQuery } from '@tanstack/react-query'
 import { ChatCardsSkeleton } from "../../components/skeleton";
 import { type ChatType } from "../../pages/home/chatPage";
 import ChatCard from "./chatCard";
+import { BACKEND_URL } from "../../utils/helpers";
 
 const GroupsWrapper = ({query}: {query: string}) => {
     const { data, isLoading, isError } = useQuery({
       queryKey: ['retrieveGroups', query],
       queryFn: async () => {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getGroupsList`, {
+        const res = await fetch(`${BACKEND_URL}/api/getGroupsList`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

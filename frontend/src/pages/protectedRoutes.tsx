@@ -2,6 +2,7 @@ import { Outlet, Navigate, useParams } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { Loading } from '../components/loading';
 import { UserContext } from "../App";
+import { BACKEND_URL } from "../utils/helpers";
 
 const ProtectedRoutes = () => {
   const [ loading, setLoading ] = useState(true);
@@ -11,7 +12,7 @@ const ProtectedRoutes = () => {
 
   useEffect(() => {
     const authenticate = async () => {
-      const result = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/authenticate`, {
+      const result = await fetch(`${BACKEND_URL}/api/auth/authenticate`, {
         method: 'POST',
         credentials: 'include',
       })
@@ -20,7 +21,7 @@ const ProtectedRoutes = () => {
     }
 
     const getId = async () => {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, {
+      const response = await fetch(`${BACKEND_URL}/api/getUser`, {
         method: 'POST',
         credentials: 'include',
       })

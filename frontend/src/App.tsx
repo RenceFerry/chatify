@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext } from "react"
 import { Loading } from "./components/loading"
-import { Routes, Route, useNavigate } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import { WelcomePage } from "./pages/welcomePage";
 import Login from "./pages/auth/login";
 import Signup from './pages/auth/signup';
@@ -11,6 +11,7 @@ import Home from './pages/home/home';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { UserContextType, ThemeContextType, UserType } from "./lib/types";
 import { queryClient } from "./lib/tansStackQuery";
+import { BACKEND_URL } from "./utils/helpers";
 
 const UserContext = createContext<UserContextType>({
   userContext: null,
@@ -19,7 +20,6 @@ const UserContext = createContext<UserContextType>({
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 function App() {
-  const navigate = useNavigate();
   let themeStore = localStorage.getItem("theme");
   const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -47,7 +47,7 @@ function App() {
     setTimeout(()=>setLoading(false), 500);
 
     const getUser = async () => {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, {
+      const response = await fetch(`${BACKEND_URL}/api/getUser`, {
         method: 'POST',
         credentials: 'include',
       })
@@ -61,7 +61,7 @@ function App() {
 
   }, [])
 
-  if (!(firstVisit === "false")) navigate('/');
+  if (!(firstVisit === "false")) return <Navigate to='/' /> ;
 
   return (
     <ThemeContext.Provider value={{theme, changeTheme}}>

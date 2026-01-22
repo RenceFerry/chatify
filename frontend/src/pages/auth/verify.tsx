@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from "../../utils/helpers";
 
 const Verify = () => {
   const [ expiration, setExpiration ] = useState(5*60);
@@ -34,7 +35,7 @@ const Verify = () => {
 
     let result;
     try {
-      result = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/verify`, {
+      result = await fetch(`${BACKEND_URL}/api/auth/verify`, {
         method: 'POST',
         credentials: "include",
         headers: {
@@ -58,7 +59,7 @@ const Verify = () => {
   }
 
   const handleResendOtp = async () => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/resendOtp`, {
+    const response = await fetch(`${BACKEND_URL}/api/auth/resendOtp`, {
       method: 'POST',
       credentials: "include",
     });

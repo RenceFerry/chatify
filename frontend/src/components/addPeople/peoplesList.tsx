@@ -4,6 +4,7 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 import { useContext } from "react";
+import { BACKEND_URL } from "../../utils/helpers";
 
 const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string | null>, query: string}) => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string | null>, q
   const { data, isError, isLoading } = useQuery({
     queryKey: ['searchPeople', query],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getPeoplesList`, {
+      const res = await fetch(`${BACKEND_URL}/api/getPeoplesList`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -29,7 +30,7 @@ const PeoplesList = ({query, tabRef}: {tabRef: React.RefObject<string | null>, q
   const handleClick = async ({id, username, email}: {email: string, username: string, id: string}) => {
     let convo;
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/serverActions/createConvo`, {
+      const res = await fetch(`${BACKEND_URL}/api/serverActions/createConvo`, {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -4,6 +4,7 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import { type RefObject, useContext } from 'react';
 import { UserContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL } from "../../utils/helpers";
 
 const FriendsList = ({query, tabRef}: {tabRef: RefObject<string | null>, query: string}) => {
   const {userContext} = useContext(UserContext);
@@ -11,7 +12,7 @@ const FriendsList = ({query, tabRef}: {tabRef: RefObject<string | null>, query: 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['getFriends', query],
     queryFn: async () => {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getConvosList`, {
+      const res = await fetch(`${BACKEND_URL}/api/getConvosList`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -27,7 +28,7 @@ const FriendsList = ({query, tabRef}: {tabRef: RefObject<string | null>, query: 
   const handleClick = async ({id, username, email}: {email: string, username: string, id: string}) => {
     let group;
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/serverActions/createGroup`, {
+      const res = await fetch(`${BACKEND_URL}/api/serverActions/createGroup`, {
         method: 'POST',
         credentials: 'include',
         headers: {

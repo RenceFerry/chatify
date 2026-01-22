@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { loginSchema } from "../../utils/schema";
 import { useState } from 'react';
 import z from 'zod';
+import { BACKEND_URL } from "../../utils/helpers";
 
 type ZodError = { errors: string[]; properties?: { email?: { errors: string[]; } | undefined; password?: { errors: string[]; } | undefined;} | undefined;};
 
@@ -32,7 +33,7 @@ const Login = () => {
 
     let result;
     try{
-      result = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
+      result = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -106,7 +107,7 @@ const Login = () => {
               </div>
             </form>
 
-            <form action={`${import.meta.env.VITE_BACKEND_URL}/api/auth/google`} method="POST" className="w-full">
+            <form action={`${BACKEND_URL}/api/auth/google`} method="POST" className="w-full">
               <button type='submit' title='login' className='w-full bg-blueC h-14 rounded-xl flex justify-center items-center text-lg font-semibold text-blueA'><FaGoogle className="inline mr-2" />Continue with Google</button>
             </form>
 

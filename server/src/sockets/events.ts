@@ -29,9 +29,31 @@ export const messageEvents = (socket: Socket, io: Server) => {
     const participants = messageStore.participants;
     const socketsIn = await io.in(convoId).fetchSockets();
     const idIn: string[] = socketsIn.map(socket => socket.data.user.id).filter(Boolean);
-    const socketsOut = participants.filter(participant => !idIn.includes(participant.userId) && participant.userId !== user.id)
+    const socketsOut = participants.filter((participant: {
+        user: {
+            image: string | null;
+            username: string;
+        };
+    } & {
+        id: string;
+        lastReadAt: Date | null;
+        unreadCount: number;
+        userId: string;
+        conversationId: string;
+    }) => !idIn.includes(participant.userId) && participant.userId !== user.id)
 
-    participants.forEach(participant => {
+    participants.forEach((participant: {
+        user: {
+            image: string | null;
+            username: string;
+        };
+    } & {
+        id: string;
+        lastReadAt: Date | null;
+        unreadCount: number;
+        userId: string;
+        conversationId: string;
+    }) => {
       io.to(participant.userId).emit(`conversation:${messageStore.type}:new-message`, messageStore);
     })
 

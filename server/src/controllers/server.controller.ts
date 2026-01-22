@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from '../lib/prisma.js'
+import { Prisma } from "../generated/prisma/client.js";
 
 export const createConvo = async (req: Request, res: Response) => {
   const participants: {
@@ -18,7 +19,7 @@ export const createConvo = async (req: Request, res: Response) => {
   if (!participants) return res.status(400).json({ error: 'Invalid Group Participants'});
 
   try {
-    const convo = await prisma.$transaction(async (tx) => {
+    const convo = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const existingConversation = await tx.conversation.findFirst({
         where: {
           type: 'PRIVATE',

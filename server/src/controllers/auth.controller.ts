@@ -174,6 +174,7 @@ export const logout = (req: Request, res: Response) => {
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token;
   if (!token) {
+    console.log("unauthorized")
     return res.status(401).json({authenticated: false});
   }
 

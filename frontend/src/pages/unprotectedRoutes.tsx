@@ -34,6 +34,7 @@ const ProtectedRoutes = () => {
   if (loading) return <Loading />;
   if (valid) return <Navigate to={`/${userContext!.id}/home`} />;
 
+  console.log('login');
   return <Outlet />;
 }
 

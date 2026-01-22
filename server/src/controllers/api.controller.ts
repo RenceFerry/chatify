@@ -6,6 +6,7 @@ const Uiid = z.guid();
 
 export const getUser = async (req: Request, res: Response) => {
   const user = req.user;
+  console.log(user);
   if (!user) return res.redirect('/auth/login');
 
   //@ts-ignore

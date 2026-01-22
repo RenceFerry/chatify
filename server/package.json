@@ -30,9 +30,7 @@
     "redis-cli": "^2.1.2",
     "socket.io": "^4.8.3",
     "tsx": "^4.21.0",
-    "zod": "^4.1.13"
-  },
-  "devDependencies": {
+    "zod": "^4.1.13",
     "@faker-js/faker": "^10.2.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
@@ -45,5 +43,8 @@
     "@types/pg": "^8.15.6",
     "prisma": "^7.0.1",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    
   }
 }

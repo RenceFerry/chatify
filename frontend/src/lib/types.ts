@@ -8,6 +8,7 @@ export type UserType = {
   username: string;
   id: string;
   email: string;
+  image: string;
 }
 
 export type UserContextType = {

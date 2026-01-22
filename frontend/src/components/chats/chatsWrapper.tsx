@@ -1,8 +1,10 @@
 import ChatCard from "./chatCard";
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from '@tanstack/react-query'
 import { ChatCardsSkeleton } from "../../components/skeleton";
 import { type ChatType } from "../../pages/home/chatPage";
+import { socket } from "../../lib/socket";
+import { queryClient } from "../../lib/tansStackQuery";
 
 const ChatsWrapper = ({ query }: { query: string }) => {
   const { data, isLoading, isError } = useQuery({
@@ -17,9 +19,22 @@ const ChatsWrapper = ({ query }: { query: string }) => {
         body: JSON.stringify({ search: query })
       })
       if (!res.ok) throw new Error();
-      return res.json();
+      const dataMessage = await res.json();
+      console.log(dataMessage, 'retrieveChats');
+      return dataMessage;
     }
   })
+
+  useEffect(() => {
+    socket.on('conversation:PRIVATE:new-message', (conversation: ChatType) => {
+      queryClient.setQueryData(['retrieveChats', query], (oldValue: ChatType[]) => {
+        const newValue = oldValue.filter(old => old.id !== conversation.id)
+
+        console.log('conversation:PRIVATE:new-message', [conversation, ...newValue]);
+        return [conversation, ...newValue];
+      })
+    })
+  }, [query])
 
   if ( isLoading ) return <ChatCardsSkeleton />;
 

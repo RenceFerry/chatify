@@ -1,4 +1,4 @@
-import React, { type RefObject, useContext, useState } from 'react'
+import { type RefObject, useContext, useState } from 'react'
 import { UserContext } from '../../App';
 import TopSection from '../../components/createGroup/topSection';
 import FriendsList from '../../components/createGroup/friendsList';

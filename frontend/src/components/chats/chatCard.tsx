@@ -19,10 +19,10 @@ const ChatCard = ({chat}: {chat: ChatType}) => {
     friend = participants[0]; 
   }
 
-  const date = messages[0] ? formatMessageTime(messages[0]?.createdAt.toISOString()) : '';
-  const sender = messages[0] ? messages[0].sender.id === id ? 'You:' : friend.user.username.split(' ')[0] + ':' : '';
+  const date = messages[0] ? formatMessageTime(messages[0]?.createdAt) : '';
+  const sender = messages[0] ? messages[0].senderId === id ? 'You:' : messages[0].sender.username + ':' : '';
   const unread = me.unreadCount;
-  const name = chat.type === 'PRIVATE' ? friend.user.username.split(' ')[0] : chat.name + (participants.length>2 ? ' and others': '');
+  const name = chat.type === 'PRIVATE' ? friend.user.username.split(' ')[0] : chat.name;
   const lstMessage = messages[0] ? messages[0].content: `Begin Conversation with ${name}`;
   const isPrivate = chat.type === 'PRIVATE';
 
@@ -46,25 +46,25 @@ const ChatCard = ({chat}: {chat: ChatType}) => {
       </div>
 
       {/** name and last message */}
-      <div className='flex flex-col flex-1'>
-        <div className='flex flex-1 flex-row items-center justify-between'>
-          <h1 className={clsx('font-semibold w-46 md:w-96 truncate text-md', {
+      <div className={clsx('flex flex-col flex-1', {
             'text-text': unread > 0,
             'text-textB': unread === 0
-          })}>{name}</h1>
-          <span className='text-xs text-textB'>{date}</span>
+          })}>
+        <div className='flex flex-1 flex-row items-center justify-between'>
+          <h1 className='font-semibold w-46 md:w-96 truncate text-md'>{name}</h1>
+          <span className='text-xs'>{date}</span>
         </div>
 
         <div className='flex flex-1 flex-row items-center justify-between'>
-          <p className='text-textB truncate font-semibold text-xs w-48 md:w-96'><span className='text-blueD'>{sender}</span> {lstMessage}</p>
+          <p className='truncate font-semibold text-xs w-48 md:w-96'><span className='text-blueD'>{sender}</span> {lstMessage}</p>
           <div className={clsx('grid items-center px-1 rounded-sm', {
             'bg-none': unread === 0,
             'bg-blueB': unread > 0
           })}>
             {
               unread === 0 ?
-              <FaCheckDouble className="text-textB"/> :
-              <span className='text-xs text-textB'>{unread > 99 ? '99+' : unread}</span>
+              <FaCheckDouble /> :
+              <span className='text-xs'>{unread > 99 ? '99+' : unread}</span>
             }
           </div>
         </div>

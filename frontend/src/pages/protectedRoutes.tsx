@@ -37,7 +37,7 @@ const ProtectedRoutes = () => {
 
   if (loading) return <Loading />;
   if (!valid) return <Navigate to='/auth/login' />;
-  if (id !== userContext!.id ) return <Navigate to={`/${userContext!.id}/home`} />;
+  if (id !== userContext?.id ) return <Navigate to={`/${userContext?.id}/home`} />;
 
   return <Outlet />;
 }

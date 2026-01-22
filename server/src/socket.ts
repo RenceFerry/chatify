@@ -2,7 +2,8 @@ import 'dotenv/config';
 import { Server } from 'socket.io';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
-import redis from './lib/redis';
+import redis from './lib/redis.js';
+import { conversationEvents, messageEvents } from './sockets/events.js';
 
 const jwtSecret = process.env.JWT_SECRET!;
 
@@ -37,9 +38,11 @@ const initializeSocket = (io: Server) => {
     })
     //
 
-    socket.on('conversation:open', (convoId) => {
-      socket.join(convoId);
-    })
+    //conversation events
+    conversationEvents(socket, io);
+
+    //message events
+    messageEvents(socket, io);
 
 
 

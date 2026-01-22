@@ -1,0 +1,23 @@
+{
+  "name": "chatify",
+  "version": "1.0.0",
+  "description": "chat app",
+  "homepage": "https://github.com/RenceFerry/chatify#readme",
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build && npm --prefix server install && npm --prefix server run build",
+    "dev": "npm --prefix frontend run dev && npm --prefix server  run dev",
+    "start": "npm --prefix server run start"
+  },
+  "bugs": {
+    "url": "https://github.com/RenceFerry/chatify/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RenceFerry/chatify.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "./server/dist/server.js",
+  "types": "./server/dist/server.d.ts"
+}

@@ -5,6 +5,7 @@ import { PiDotsThreeOutlineLight } from "react-icons/pi";
 import { IoVideocamOutline } from "react-icons/io5";
 import { FiPhone } from "react-icons/fi";
 import InputBottom from "./chats/chatPage/inputBottom";
+import { useRef } from "react";
 
 export const ChatCardsSkeleton = () => {
   return (
@@ -93,11 +94,14 @@ export const ChatPageSkeleton = ({tabRef}: {tabRef: React.RefObject<string |null
   const {id} = useParams();
   const [searchParams] = useSearchParams();
   const convoId = searchParams.get('convoId');
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const navigate = useNavigate();
 
   const handleBack = () => {
     navigate(`/${id}/home?tab=${tabRef.current}`)
   }
+
+  const onSend = () => {};
 
   if (!convoId) return <Navigate to={`/${id}/home?tab=chats`} />;
 
@@ -137,7 +141,7 @@ export const ChatPageSkeleton = ({tabRef}: {tabRef: React.RefObject<string |null
       <MessagesSkeleton />
 
       {/** input area */}
-      <InputBottom />
+      <InputBottom onSend={onSend} textareaRef={textareaRef} />
     </div>
   )
 }

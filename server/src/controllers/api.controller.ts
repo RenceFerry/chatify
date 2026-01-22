@@ -1,18 +1,33 @@
 import { Request, Response } from 'express';
 import {prisma} from '../lib/prisma.js'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/client.js';
 import z from 'zod';
 
 const Uiid = z.guid();
 
-export const getUser = (req: Request, res: Response) => {
+export const getUser = async (req: Request, res: Response) => {
   const user = req.user;
   if (!user) return res.redirect('/auth/login');
 
   //@ts-ignore
-  const { username, email, id } = user;
+  const { id } = user;
 
-  res.status(200).json({username, email, id});
+  try {
+    const response = await prisma.users.findUnique({
+      where: {
+        id
+      },
+      select: {
+        id: true,
+        image: true,
+        username: true,
+        email: true
+      }
+    })
+    res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({error: "server error"});
+  }
+
 }
 
 export const getListForCreatingGroups = async (req: Request, res: Response) => {
@@ -103,7 +118,6 @@ export const getChatsList = async (req: Request, res: Response) => {
   if (!search) search = '';
 
   try {
-    console.log('hello')
     const chats = await prisma.conversation.findMany({
       where: {
         type: 'PRIVATE',
@@ -134,8 +148,13 @@ export const getChatsList = async (req: Request, res: Response) => {
       include: {
         participants: {
           include: {
-            user: true,
-          }
+            user: {
+              select: {
+                username: true, 
+                image: true
+              }
+            }
+          },
         },
         messages: {
           take: 1,
@@ -143,7 +162,12 @@ export const getChatsList = async (req: Request, res: Response) => {
             createdAt: 'desc'
           },
           include: {
-            sender: true
+            sender: {
+              select: {
+                username: true,
+                image: true
+              }
+            }
           }
         }
       }
@@ -205,7 +229,12 @@ export const getGroupsList = async (req: Request, res: Response) => {
       include: {
         participants: {
           include: {
-            user: true,
+            user: {
+              select: {
+                image: true,
+                username: true
+              }
+            }
           }
         },
         messages: {
@@ -214,7 +243,12 @@ export const getGroupsList = async (req: Request, res: Response) => {
             createdAt: 'desc'
           },
           include: {
-            sender: true
+            sender: {
+              select: {
+                image: true,
+                username: true
+              }
+            }
           }
         }
       }
@@ -251,12 +285,26 @@ export const getMessages = async (req: Request, res: Response) => {
         messages: {
           take: 30,
           orderBy: {
-            createdAt: 'asc'
+            createdAt: 'desc'
+          },
+          include: {
+            sender: {
+              select: {
+                username: true,
+                image: true
+              }
+            }
           }
         },
         participants: {
           include: {
-            user: true
+            user: {
+              select: {
+                username: true,
+                image: true,
+                id: true
+              }
+            }
           }
         }
       }

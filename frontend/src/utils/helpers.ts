@@ -1,3 +1,5 @@
+
+
 export function formatMessageTime(iso: string) {
   return new Intl.DateTimeFormat(undefined, {
     month: "2-digit",
@@ -24,4 +26,14 @@ export  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>, maxHeight: 
   } else {
     textarea.style.height = `${scrollHeight}px`;
   }
+}
+
+export const generateRandomNumber = (digit: number) => {
+  const min = 10 ** (digit - 1);
+  const max = 10 ** digit;
+
+  const array = new Uint32Array(1);
+  window.crypto.getRandomValues(array);
+
+  return min + (array[0] % (max - min + 1));
 }

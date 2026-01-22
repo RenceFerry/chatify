@@ -14,22 +14,28 @@ const ProtectedRoutes = () => {
         method: 'POST',
         credentials: 'include',
       })
-      setValid(result.ok);
-      setLoading(false);
+
+      return result.ok;
     }
 
     const getId = async () => {
+      const isAuthenticate = await authenticate();
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/getUser`, {
         method: 'POST',
         credentials: 'include',
       })
 
-      if (!response.ok) return;
+      if (!response.ok || !isAuthenticate) {
+        setLoading(false);
+        setValid(false);
+      }
       const user = await response.json();
 
       changeUser(user);
+      setLoading(false);
+      setValid(true);
     }
-    authenticate();
     getId();
   }, [changeUser]);
 

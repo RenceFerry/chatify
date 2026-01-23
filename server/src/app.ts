@@ -16,7 +16,7 @@ import { fileURLToPath } from 'url';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import initializeSocket from './socket.js';
-import { Client_BASE_URL } from './lib/utils.js';
+import { CLIENT_BASE_URL } from './lib/utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDevelopment = process.env.NODE_ENV === "development";
@@ -27,7 +27,7 @@ const app: Application = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: Client_BASE_URL,
+    origin: CLIENT_BASE_URL,
     credentials: isDevelopment,
     methods: ["GET", "POST"],
   }
@@ -37,7 +37,7 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: Client_BASE_URL,
+  origin: CLIENT_BASE_URL,
   credentials: isDevelopment,
 }));
 app.use(passport.initialize());

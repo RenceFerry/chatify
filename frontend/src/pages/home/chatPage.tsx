@@ -179,8 +179,12 @@ const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
         const newValue = structuredClone(oldValue);
 
         newValue?.messages.push(message);
+
+        return newValue;
       })
     })
+
+
   }, [convoId])
 
   useEffect(() => {

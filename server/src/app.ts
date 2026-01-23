@@ -21,6 +21,7 @@ import { Client_BASE_URL } from './lib/utils.js';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDevelopment = process.env.NODE_ENV === "development";
 const routesRegex = /^\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\/(home|chat)$/;
+const googleCallbackUrl = process.env.GOOGLE_CALLBACK_URL || "http://localhost:4000/api/auth/google/callback";
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -48,7 +49,7 @@ initializeSocket(io);
 passport.use(new GoogleStrategy({
   clientID: process.env.CLIENT_ID as string,
   clientSecret: process.env.CLIENT_SECRET as string,
-  callbackURL: "http://localhost:4000/api/auth/google/callback",
+  callbackURL: googleCallbackUrl,
   passReqToCallback: true
 },
 async (request: Request, accessToken: string, refreshToken: string, profile: passport.Profile, done: passport.DoneCallback) => {

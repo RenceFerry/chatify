@@ -7,7 +7,6 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {
   authRoutes,
-  authPage,
   apiRoutes,
   serverActionRoutes
 } from './routes/export.js'
@@ -75,20 +74,8 @@ async (request: Request, accessToken: string, refreshToken: string, profile: pas
 
 //app routes {
 app.use(express.static(path.join(__dirname, '../../frontend/dist'), {
-  setHeaders(res, filePath) {
-    if (filePath.endsWith('index.html')) {
-      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
-      res.setHeader("Pragma", "no-cache");
-      res.setHeader("Expires", "0");
-    }
-  }
+  index: false,
 }));
-
-app.use(routesRegex, authenticate, (req: Request, res: Response) => {
-  res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
-});
-
-app.use('/auth', authPage);
 
 app.use('/api/auth', authRoutes);
 
@@ -96,10 +83,15 @@ app.use('/api/serverActions', serverActionRoutes);
 
 app.use('/api', apiRoutes);
 
-app.use(authenticate, (req: Request, res: Response) => {
-  const user = req.user!;
-  //@ts-ignore
-  res.redirect(`/${user?.id}/home`);
+app.use(routesRegex, authenticate, (req: Request, res: Response) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
+});
+
+app.all(/^\/.*/, (req: Request, res: Response) => {
+  console.log('hello')
+  res.setHeader("Cache-Control", "no-store");
+  res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 })
 //app routes }
 

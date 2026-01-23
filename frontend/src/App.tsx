@@ -1,6 +1,6 @@
-import { useState, useEffect, createContext } from "react"
+import { useState, useEffect, useRef, createContext } from "react"
 import { Loading } from "./components/loading"
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route, useNavigate } from "react-router-dom"
 import { WelcomePage } from "./pages/welcomePage";
 import Login from "./pages/auth/login";
 import Signup from './pages/auth/signup';
@@ -22,6 +22,7 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 function App() {
   let themeStore = localStorage.getItem("theme");
   const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const navigate = useNavigate();
 
   if (!themeStore) {
     localStorage.setItem("theme", isDark ? "dark" : "light");
@@ -30,11 +31,10 @@ function App() {
   
   const [ theme, setTheme ] = useState(themeStore || (isDark ? "dark" : "light"));
   const [ userContext, changeUser ] = useState<UserType | null>(null);
-  const [ loading, setLoading ] = useState(true);
   const html = document.documentElement;
   html.classList.toggle("dark", theme === "dark");
   html.classList.toggle("light", theme === "light");
-  const firstVisit = localStorage.getItem('firstVisit') || true;
+  const firstVisit = useRef(localStorage.getItem('firstVisit') || true);
 
   const changeTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
@@ -43,8 +43,16 @@ function App() {
   }
   
   useEffect(() => {
+    console.log(!(firstVisit.current === 'false'), firstVisit.current);
+    if (!(firstVisit.current === 'false')) {
+      firstVisit.current = 'false';
+      localStorage.setItem('firsVisit', 'false');
+      navigate('/');
+    }
+  }, [firstVisit, navigate]) 
+
+  useEffect(() => {
     document.title = 'Chatify';
-    setTimeout(()=>setLoading(false), 500);
 
     const getUser = async () => {
       const response = await fetch(`${BACKEND_URL}/api/getUser`, {
@@ -58,31 +66,26 @@ function App() {
       changeUser(user);
     }
     getUser();
-
   }, [])
 
-  if (!(firstVisit === "false")) return <Navigate to='/' /> ;
 
   return (
     <ThemeContext.Provider value={{theme, changeTheme}}>
     <UserContext.Provider value={{userContext, changeUser}}> 
     <QueryClientProvider client={queryClient}>
       <div className="w-dvw h-dvh light roboto relative">
-        {
-          loading ? <Loading /> :
-          <Routes>
-            <Route element={<UnprotectedRoutes />}>
-              <Route path='/loading' element={<Loading />} />
-              <Route path="/" element={<WelcomePage />} />
-              <Route path="/auth/login" element={<Login />} />
-              <Route path="/auth/signup" element={<Signup />} />
-              <Route path="/auth/verify" element={<Verify />} />
-            </Route>
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/:id/*" element={<Home />} />
-            </Route>
-          </Routes>
-        }
+        <Routes>
+          <Route element={<UnprotectedRoutes />}>
+            <Route path='/loading' element={<Loading />} />
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/auth/login" element={<Login />} />
+            <Route path="/auth/signup" element={<Signup />} />
+            <Route path="/auth/verify" element={<Verify />} />
+          </Route>
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/:id/*" element={<Home />} />
+          </Route>
+        </Routes>
         <button type="button" title="theme" className="absolute bottom-3 left-3 z-50 text-text" onClick={changeTheme}>toggle theme</button>
       </div>
     </QueryClientProvider>

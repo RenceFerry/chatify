@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import clsx from "clsx";
 
 export const WelcomePage = () => {
-  localStorage.setItem('firstVisit', 'false');
   const [ index, setIndex ] = useState(0);
   const startX = useRef(0);
 

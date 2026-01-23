@@ -74,11 +74,19 @@ async (request: Request, accessToken: string, refreshToken: string, profile: pas
 ))
 
 //app routes {
+app.use(express.static(path.join(__dirname, '../../frontend/dist'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('index.html')) {
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+    }
+  }
+}));
+
 app.use(routesRegex, authenticate, (req: Request, res: Response) => {
   res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
-
-app.use(express.static(path.join(__dirname, '../../frontend/dist')));
 
 app.use('/auth', authPage);
 

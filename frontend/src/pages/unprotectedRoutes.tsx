@@ -4,7 +4,7 @@ import { Loading } from '../components/loading';
 import { UserContext } from "../App";
 import { BACKEND_URL } from "../utils/helpers";
 
-const ProtectedRoutes = () => {
+const UnprotectedRoutes = () => {
   const [ loading, setLoading ] = useState(true);
   const [ valid, setValid ] = useState(false);
   const {userContext, changeUser} = useContext(UserContext);
@@ -38,4 +38,4 @@ const ProtectedRoutes = () => {
   return <Outlet />;
 }
 
-export default ProtectedRoutes;
+export default UnprotectedRoutes;

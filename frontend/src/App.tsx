@@ -43,7 +43,6 @@ function App() {
   }
   
   useEffect(() => {
-    console.log(!(firstVisit.current === 'false'), firstVisit.current);
     if (!(firstVisit.current === 'false')) {
       firstVisit.current = 'false';
       localStorage.setItem('firsVisit', 'false');

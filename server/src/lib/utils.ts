@@ -39,3 +39,5 @@ export const createUsers = async ( users: UserType[] ) => {
     }
   }
 }
+
+export const Client_BASE_URL = process.env.DEV ? "http://localhost:5173" : undefined;

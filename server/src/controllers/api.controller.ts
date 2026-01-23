@@ -6,7 +6,6 @@ const Uiid = z.guid();
 
 export const getUser = async (req: Request, res: Response) => {
   const user = req.user;
-  console.log(user);
   if (!user) return res.redirect('/auth/login');
 
   //@ts-ignore
@@ -177,7 +176,6 @@ export const getChatsList = async (req: Request, res: Response) => {
     return res.status(200).json(chats);
 
   } catch (e) {
-    console.log(e)
     return res.status(500).json({ error: 'Server Error' });
   }
 }

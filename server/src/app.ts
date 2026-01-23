@@ -16,9 +16,9 @@ import { fileURLToPath } from 'url';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import initializeSocket from './socket.js';
+import { Client_BASE_URL } from './lib/utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const clientUrl = process.env.CLIENT_URL;
 const isDevelopment = process.env.NODE_ENV === "development";
 const routesRegex = /^\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\/(home|chat)$/;
 
@@ -26,7 +26,7 @@ const app: Application = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: clientUrl,
+    origin: Client_BASE_URL,
     credentials: isDevelopment,
     methods: ["GET", "POST"],
   }
@@ -36,7 +36,7 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: clientUrl,
+  origin: Client_BASE_URL,
   credentials: isDevelopment,
 }));
 app.use(passport.initialize());
@@ -58,7 +58,6 @@ async (request: Request, accessToken: string, refreshToken: string, profile: pas
     if (!email) return done(null, false);
     
     try {
-      console.log(image, username);
       const user = await User.findOrCreate({
         email: email,
         username: username as string,
@@ -89,7 +88,6 @@ app.use(routesRegex, authenticate, (req: Request, res: Response) => {
 });
 
 app.all(/^\/.*/, (req: Request, res: Response) => {
-  console.log('hello')
   res.setHeader("Cache-Control", "no-store");
   res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 })

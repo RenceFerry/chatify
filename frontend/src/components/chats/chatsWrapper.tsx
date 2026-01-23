@@ -21,7 +21,6 @@ const ChatsWrapper = ({ query }: { query: string }) => {
       })
       if (!res.ok) throw new Error();
       const dataMessage = await res.json();
-      console.log(dataMessage, 'retrieveChats');
       return dataMessage;
     }
   })
@@ -31,7 +30,6 @@ const ChatsWrapper = ({ query }: { query: string }) => {
       queryClient.setQueryData(['retrieveChats', query], (oldValue: ChatType[]) => {
         const newValue = oldValue.filter(old => old.id !== conversation.id)
 
-        console.log('conversation:PRIVATE:new-message', [conversation, ...newValue]);
         return [conversation, ...newValue];
       })
     })

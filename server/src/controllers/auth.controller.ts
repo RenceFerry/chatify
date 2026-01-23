@@ -50,8 +50,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     const isCorrect = await bcrypt.compare(validatedData.data.password as string, user.password as string);
 
-    console.log(isCorrect);
-
     if (isCorrect) {
       req.user = { id, email, username };
       next();
@@ -73,7 +71,6 @@ export const signup = async (req: Request, res: Response) => {
   if (!data) return res.status(400).json({
     message: 'Missing fields'
   })
-  console.log(data);
   const validatedData = signupSchema.safeParse(data);
 
   //validation check
@@ -107,8 +104,6 @@ export const signup = async (req: Request, res: Response) => {
   try {
     const res = await redis.set(email, JSON.stringify({username, password, email, otp}), {expiration: {type: 'EX', value: 60*5}});
 
-    console.log(res);
-    console.log(`Storing email${email}!`);
   } catch (e) {
     return res.status(500).json({
       message: "Server error, try again later"
@@ -145,7 +140,6 @@ export const verify = async (req: Request, res: Response, next: NextFunction) =>
 
     data = JSON.parse(result!);
   } catch (e) {
-    console.log(e)
     return res.status(500).json({
       message: "Server error, try again later"
     })
@@ -174,7 +168,6 @@ export const logout = (req: Request, res: Response) => {
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token;
   if (!token) {
-    console.log("unauthorized")
     return res.status(401).json({authenticated: false});
   }
 
@@ -250,7 +243,6 @@ export const resendOtp = async (req: Request, res: Response, next: NextFunction)
     return res.status(500).json({message: 'Server error, try again later'});
   }
 
-  console.log('OK');
   res.sendStatus(200);
 }
 
@@ -262,5 +254,4 @@ const sendEmail = (email: string, otp: number) => {
     subject: "Verify your email",
     text: `${otp}`
   });
-  console.log('email sent');
 }

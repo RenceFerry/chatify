@@ -26,7 +26,6 @@ const initializeSocket = (io: Server) => {
   });
 
   io.on('connection', async (socket: Socket) => {
-    console.log('a user connects ' + socket.id);
     const user = socket.data.user;
     socket.join(user.id);
     const key = `presence:user:${user.id}`

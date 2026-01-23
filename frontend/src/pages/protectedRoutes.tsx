@@ -25,7 +25,6 @@ const ProtectedRoutes = () => {
       }
       const user = await response.json();
 
-      console.log(user);
       changeUser(user);
       setLoading(false);
       setValid(true);

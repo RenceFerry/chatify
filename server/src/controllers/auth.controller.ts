@@ -117,7 +117,7 @@ export const signup = async (req: Request, res: Response) => {
     sameSite: sameSite,
     secure: true,
   })
-  sendEmail(email, otp);
+  await sendEmail(email, otp);
   return res.redirect('/auth/verify');
 }
 
@@ -146,8 +146,7 @@ export const verify = async (req: Request, res: Response, next: NextFunction) =>
   }
 
   if (Number(data.otp) === Number(otp)) {
-    const { email, username, password } = data;
-    req.user = { email, username, password };
+    req.user = data;
 
     next();
   }
@@ -238,7 +237,7 @@ export const resendOtp = async (req: Request, res: Response, next: NextFunction)
   }
 
   try {
-    sendEmail(email, otp);
+    await sendEmail(email, otp);
   } catch(e) {
     return res.status(500).json({message: 'Server error, try again later'});
   }
@@ -247,11 +246,11 @@ export const resendOtp = async (req: Request, res: Response, next: NextFunction)
 }
 
 //some helper functions
-const sendEmail = (email: string, otp: number) => {
-  transporter.sendMail({
+export const sendEmail = async (email: string, otp: number) => {
+  await transporter.sendMail({
     from: process.env.NODEMAILER_EMAIL,
     to: email,
     subject: "Verify your email",
-    text: `${otp}`
+    text: `Verify your email using this otp, ${otp} , never share this to anyone. Otp expires after 5 minutes.`
   });
 }

@@ -13,5 +13,9 @@ export const loginSchema = signupSchema.pick({
 
 export const EditProfileSchema = signupSchema.pick({
   email: true,
-  username: true
+  username: true,
+})
+
+export const OtpSchema = z.object({
+  otp: z.string().min(6, 'Otp must be a six digit number').max(6, 'Otp must be a six digit number').regex(/^[0-9]/, 'Otp must only be numbers'),
 })

@@ -9,6 +9,7 @@ export type UserType = {
   id: string;
   email: string;
   image: string;
+  bio: string
 }
 
 export type UserContextType = {

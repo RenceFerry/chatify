@@ -1,18 +1,18 @@
 //import type { Transporter } from 'nodemailer';
-import nodemailer from 'nodemailer';
+import Nodemailer from 'nodemailer';
+import { MailtrapTransport } from 'mailtrap';
 import 'dotenv/config';
 
-const host = process.env.MAILTRAP_DEV_HOST;
-const port = 587;
+const TOKEN = process.env.MAILTRAP_API_TOKEN!;
 
-const transporter = nodemailer.createTransport({
-  host: host,
-  port: port,
+const transporter = Nodemailer.createTransport({
+  host: 'smtp-relay.brevo.com',
+  port: 587,
   secure: false,
   auth: {
-    user: process.env.MAILTRAP_DEV_USER,
-    pass: process.env.MAILTRAP_DEV_PASS,
-  },
+    user: 'a0be89001@smtp-brevo.com',
+    pass: process.env.BREVO_PASSWORD,
+  }
 });
 
 export default transporter;

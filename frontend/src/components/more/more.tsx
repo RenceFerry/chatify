@@ -9,7 +9,7 @@ const More = () => {
   const on = theme === "dark" ? true : false;
 
   return (
-    <div className='flex-1 flex w-full h-full flex-col justify-between py-4 items-center '>
+    <div className='flex-1 flex w-full h-full flex-col justify-between p-4 items-center'>
       <div className="flex flex-col gap-2 w-full text-sm md:text-lg md:w-[80%] mt-6">
         <div className='flex flex-row justify-between h-6 w-full items-center '>
           <div className='flex flex-row gap-2 items-center'>

@@ -45,7 +45,7 @@ function App() {
   useEffect(() => {
     if (!(firstVisit.current === 'false')) {
       firstVisit.current = 'false';
-      localStorage.setItem('firsVisit', 'false');
+      localStorage.setItem('firstVisit', 'false');
       navigate('/');
     }
   }, [firstVisit, navigate]) 

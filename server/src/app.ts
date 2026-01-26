@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 import { User } from './models/export.js'
 import { authenticate } from './controllers/auth.controller.js';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
 import {
   authRoutes,
@@ -22,6 +23,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDevelopment = process.env.NODE_ENV === "development";
 const routesRegex = /^\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\/(home|chat)$/;
 const googleCallbackUrl = process.env.GOOGLE_CALLBACK_URL || "http://localhost:4000/api/auth/google/callback";
+const jwtSecret = process.env.JWT_SECRET;
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -83,7 +85,20 @@ app.use('/api/serverActions', serverActionRoutes);
 
 app.use('/api', apiRoutes);
 
-app.use(routesRegex, authenticate, (req: Request, res: Response) => {
+app.use(routesRegex, (req: Request, res: Response) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.redirect('/auth/login');
+  }
+
+  try {
+    const user = jwt.verify(token as string, jwtSecret as string);
+    
+    req.user = user as Object;
+  } catch (e) {
+    return res.redirect('/auth/login');
+  }
+
   res.setHeader("Cache-Control", "no-store");
   res.status(200).sendFile(path.join(__dirname, '../../frontend/dist/index.html'));
 });
@@ -96,6 +111,14 @@ app.all(/^\/.*/, (req: Request, res: Response) => {
 
 export { passport, server };
 
-// import { createUsers, users } from './lib/utils.js';
+// import transporter from './lib/nodemailer.js';
 
+// transporter.sendMail({
+//     from: process.env.NODEMAILER_EMAIL,
+//     to: 'ferryfajaritoclarence@gmail.com',
+//     subject: "Verify your email",
+//     text: `${'otp'}`
+//   });
+
+// import { createUsers, users } from './lib/utils.js';
 // createUsers(users);

@@ -103,6 +103,8 @@ const Verify = () => {
                 <p className='m-auto mt-2 text-error'>{error.message}</p>
               )
             }
+
+            <p className='self-center text-textB mt-3'>Didn't recieve any emails? Try checking your spam folder.</p>
           </form>
         </div>
       </div>

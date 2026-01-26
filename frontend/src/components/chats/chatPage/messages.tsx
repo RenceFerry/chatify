@@ -49,7 +49,7 @@ const Messages = ({isError, messages}: {isError: boolean, messages: Message[] | 
         !messages || messages.length === 0 ?
         <h1 className='text-xl text-textB'>Start Chatting</h1> :
         messages?.map((message) => (
-          <div key={message.id} className={clsx('max-w-[70%] my-1 p-2 rounded-xl flex flex-col text-sm md:text-lg', {
+          <div key={message.id} className={clsx('max-w-[70%] my-1 p-2 rounded-xl flex flex-col text-sm md:text-lg relative overflow-visible', {
             'bg-blueD self-end text-back rounded-br-none': message.senderId === userContext?.id,
             'bg-back self-start text-text rounded-bl-none': message.senderId !== userContext?.id
           })}>

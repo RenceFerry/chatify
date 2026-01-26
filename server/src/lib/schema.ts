@@ -10,3 +10,8 @@ export const loginSchema = signupSchema.pick({
   email: true,
   password: true
 })
+
+export const EditProfileSchema = signupSchema.pick({
+  email: true,
+  username: true,
+})

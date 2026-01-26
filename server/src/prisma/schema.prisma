@@ -22,6 +22,7 @@ model users {
   image      String?
   email      String   @unique
   id         String   @id @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  bio        String?
 
   conversations  ConversationParticipant[]
   messages       Message[]

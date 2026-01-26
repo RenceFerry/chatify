@@ -20,7 +20,8 @@ export const getUser = async (req: Request, res: Response) => {
         id: true,
         image: true,
         username: true,
-        email: true
+        email: true,
+        bio: true
       }
     })
     res.status(200).json(response);

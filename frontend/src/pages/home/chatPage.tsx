@@ -199,7 +199,7 @@ const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
 
 
   return (
-    <div className="w-full h-full flex flex-col justify-between items-center bg-back pt-2">
+    <div className="w-dvw h-dvh flex flex-col justify-between items-center bg-back pt-2">
       {/** top section */}
       <TopMenu data={data} id={userContext!.id} tabRef={tabRef} />
 

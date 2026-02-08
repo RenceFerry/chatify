@@ -11,6 +11,7 @@ import imageCompression from 'browser-image-compression';
 import ImageCropper from "./imageCropper";
 import type { Area } from "react-easy-crop";
 import { cropImage } from "../../utils/helpers";
+import type {UserType} from "../../lib/types";
 
 const Profile = ({ setIsOpen }: {setIsOpen: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const navigate = useNavigate();
@@ -91,7 +92,7 @@ const Profile = ({ setIsOpen }: {setIsOpen: React.Dispatch<React.SetStateAction<
       if (!res.ok) alert('Failed to upload image');
 
       const newImageUrl = await res.json();
-      changeUser(prev => ({...prev, image: newImageUrl.image}));
+      changeUser((prev: UserType | null) => prev ? {...prev, image: newImageUrl.image} : null);
     } catch (e) {
       console.log(e);
     }

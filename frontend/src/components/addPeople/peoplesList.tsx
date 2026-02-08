@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { UsersListSkeleton } from "../skeleton";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
+import { UserContext } from "../../lib/contexts";
 import { useContext } from "react";
 import { BACKEND_URL } from "../../utils/helpers";
 

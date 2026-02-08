@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChatPageSkeleton } from "../../components/skeleton";
 import {socket} from '../../lib/socket';
 import { queryClient } from "../../lib/tansStackQuery";
-import { UserContext } from "../../App";
+import { UserContext } from "../../lib/contexts";
 import { generateRandomNumber } from "../../utils/helpers";
 import { BACKEND_URL } from "../../utils/helpers";
 
@@ -183,8 +183,6 @@ const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
         return newValue;
       })
     })
-
-
   }, [convoId])
 
   useEffect(() => {
@@ -197,17 +195,18 @@ const ChatPage = ({tabRef}: {tabRef: RefObject<string | null>}) => {
 
   if (isLoading) return <ChatPageSkeleton tabRef={tabRef} />
 
-
   return (
     <div className="w-dvw h-dvh flex flex-col justify-between items-center bg-back pt-2">
-      {/** top section */}
-      <TopMenu data={data} id={userContext!.id} tabRef={tabRef} />
+        <>
+          {/** top section */}
+          <TopMenu data={data} id={userContext!.id} tabRef={tabRef} />
 
-      {/** chat area */}
-      <Messages isError={isError} messages={data?.messages} />
+          {/** chat area */}
+          <Messages isError={isError} messages={data?.messages} />
 
-      {/** input area */}
-      <InputBottom onSend={onSend} textareaRef={textareaRef} />
+          {/** input area */}
+          <InputBottom onSend={onSend} textareaRef={textareaRef} />
+        </>
     </div>
   )
 }

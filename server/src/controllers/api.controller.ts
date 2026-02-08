@@ -314,3 +314,32 @@ export const getMessages = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'server error'});
   }
 }
+
+export const getProfile = async (req: Request, res: Response) => {
+  const id = req.body.id || '';
+
+  if (!id) return res.status(400).json({ error: 'Invalid user id'});
+
+  const valid = Uiid.safeParse(id);
+  if (!valid.success) return res.status(400).json({ error: 'Invalid user id'});
+
+  try {
+    const profile = await prisma.users.findUnique({
+      where: {
+        id
+      },
+      select: {
+        id: true,
+        username: true,
+        image: true,
+        bio: true
+      }
+    });
+
+    if (!profile) return res.status(404).json({ error: 'User not found'});
+
+    return res.status(200).json(profile);
+  } catch (e) {
+    return res.status(500).json({ error: 'server error'});
+  }
+}

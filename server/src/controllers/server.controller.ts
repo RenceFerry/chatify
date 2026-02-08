@@ -6,6 +6,7 @@ import { EditProfileSchema } from "../lib/schema.js";
 import z from 'zod';
 import redis from "../lib/redis.js";
 import { sendEmail } from './auth.controller.js'
+import { supabase } from "../lib/supabase.js";
 
 export const createConvo = async (req: Request, res: Response) => {
   const participants: {
@@ -234,5 +235,39 @@ export const resendOtp = async (req: Request, res: Response) => {
     res.status(200).json({message: "Otp sent"});
   } catch (e) {
     return res.status(500).json({ errors: ['server error']});
+  }
+}
+
+export const updateImage = async (req: Request, res: Response) => {
+  //@ts-ignore
+  const {id} : {id: string} = req.user; 
+  if (!req.file) return res.status(400).json({ error: 'Image is required'});
+  const fileExtension = req.file.originalname.split('.').pop();
+
+  const file = new File([req.file.buffer], `${id}.${fileExtension}`, { type: req.file.mimetype });
+
+  try {
+    const { data, error } = await supabase.storage
+      .from('assets')
+      .upload(`profiles/${file.name}`, file, { upsert: true });
+
+    if (error) {
+      return res.status(500).json({ error: 'Image upload failed'});
+    }
+
+    const imageUrl = supabase.storage.from('assets').getPublicUrl(data.path).data.publicUrl;
+
+    const updateUser = await prisma.users.update({
+      where: {
+        id
+      },
+      data: {
+        image: imageUrl
+      }
+    })
+
+    return res.status(200).json({message: "Image Updated", image: updateUser.image});
+  } catch (e) {
+    return res.status(500).json({ error: 'Server Error'});
   }
 }

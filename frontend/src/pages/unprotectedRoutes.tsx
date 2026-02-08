@@ -1,7 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { Loading } from '../components/loading';
-import { UserContext } from "../App";
+import { UserContext } from "../lib/contexts";
 import { BACKEND_URL } from "../utils/helpers";
 
 const UnprotectedRoutes = () => {

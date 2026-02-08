@@ -1,6 +1,6 @@
 import { type RefObject, useContext, useState } from 'react'
 import TopSection from '../../components/addPeople/topSection';
-import { UserContext } from '../../App';
+import { UserContext } from '../../lib/contexts';
 import PeoplesList from '../../components/addPeople/peoplesList';
 
 const AddPeople = ({tabRef}: {tabRef: RefObject<string | null>}) => {

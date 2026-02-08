@@ -1,7 +1,7 @@
 import { Outlet, Navigate, useParams } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import { Loading } from '../components/loading';
-import { UserContext } from "../App";
+import { UserContext } from "../lib/contexts";
 import { BACKEND_URL } from "../utils/helpers";
 
 const ProtectedRoutes = () => {

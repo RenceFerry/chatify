@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { formatMessageTime } from '../../../utils/helpers';
-import { UserContext } from '../../../App';
+import { UserContext } from '../../../lib/contexts';
 
 type Message = {
   id: string;

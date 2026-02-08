@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUser, getListForCreatingGroups, getPeoplesListForCreatingChats, getChatsList, getGroupsList, getMessages } from '../controllers/api.controller.js'
+import { getUser, getListForCreatingGroups, getPeoplesListForCreatingChats, getChatsList, getGroupsList, getMessages, getProfile } from '../controllers/api.controller.js'
 import { authenticate } from '../controllers/auth.controller.js';
 
 const router = Router();
@@ -10,5 +10,6 @@ router.post('/getPeoplesList', authenticate, getPeoplesListForCreatingChats);
 router.post('/getChatsList', authenticate, getChatsList);
 router.post('/getGroupsList', authenticate, getGroupsList);
 router.post('/getMessages', authenticate, getMessages);
+router.post('/getProfile', authenticate, getProfile);
 
 export default router;

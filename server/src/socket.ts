@@ -44,10 +44,9 @@ const initializeSocket = (io: Server) => {
     //message events
     messageEvents(socket, io);
 
-
-
     socket.on('disconnect', () => {
       clearInterval(interval);
+      redis.del(key);
     })
   });
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, createContext } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Loading } from "./components/loading"
 import { Routes, Route, useNavigate } from "react-router-dom"
 import { WelcomePage } from "./pages/welcomePage";
@@ -9,15 +9,11 @@ import ProtectedRoutes from "./pages/protectedRoutes";
 import UnprotectedRoutes from "./pages/unprotectedRoutes";
 import Home from './pages/home/home';
 import { QueryClientProvider } from '@tanstack/react-query';
-import type { UserContextType, ThemeContextType, UserType } from "./lib/types";
+import type { UserType } from "./lib/types";
 import { queryClient } from "./lib/tansStackQuery";
 import { BACKEND_URL } from "./utils/helpers";
-
-const UserContext = createContext<UserContextType>({
-  userContext: null,
-  changeUser: () => {},
-});
-const ThemeContext = createContext<ThemeContextType | null>(null);
+import { ThemeContext, UserContext } from "./lib/contexts";
+import ProfilePage from "./pages/profilePage";
 
 function App() {
   let themeStore = localStorage.getItem("theme");
@@ -51,8 +47,6 @@ function App() {
   }, [firstVisit, navigate]) 
 
   useEffect(() => {
-    document.title = 'Chatify';
-
     const getUser = async () => {
       const response = await fetch(`${BACKEND_URL}/api/getUser`, {
         method: 'POST',
@@ -62,6 +56,7 @@ function App() {
       if (!response.ok) return;
       const user = await response.json();
 
+      console.log('hello')
       changeUser(user);
     }
     getUser();
@@ -84,6 +79,7 @@ function App() {
           <Route element={<ProtectedRoutes />}>
             <Route path="/:id/*" element={<Home />} />
           </Route>
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
         <button type="button" title="theme" className="absolute bottom-3 left-3 z-50 text-text" onClick={changeTheme}>toggle theme</button>
       </div>
@@ -94,4 +90,3 @@ function App() {
 }
 
 export default App
-export { ThemeContext, UserContext };

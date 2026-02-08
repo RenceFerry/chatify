@@ -2,7 +2,7 @@ import { useCallback, useEffect, useContext, useRef, useState } from "react";
 import { BACKEND_URL, onChange } from "../../utils/helpers";
 import { EditProfileSchema, OtpSchema } from "../../utils/schema";
 import z from 'zod';
-import { UserContext } from "../../App";
+import { UserContext } from "../../lib/contexts";
 import { useNavigate } from "react-router-dom";
 
 const MAX_TEXTAREA_HEIGHT = 150; // Maximum height in pixels

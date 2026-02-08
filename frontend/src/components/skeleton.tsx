@@ -5,7 +5,8 @@ import { PiDotsThreeOutlineLight } from "react-icons/pi";
 import { IoVideocamOutline } from "react-icons/io5";
 import { FiPhone } from "react-icons/fi";
 import InputBottom from "./chats/chatPage/inputBottom";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
+import { UserContext } from "../lib/contexts";
 
 export const ChatCardsSkeleton = () => {
   return (
@@ -142,6 +143,47 @@ export const ChatPageSkeleton = ({tabRef}: {tabRef: React.RefObject<string |null
 
       {/** input area */}
       <InputBottom onSend={onSend} textareaRef={textareaRef} />
+    </div>
+  )
+}
+
+export const ProfilePageSkeleton = () => {
+  const { userContext } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (userContext) {
+      navigate(`${window.location.origin}/${userContext.id}/home?tab=profile`);
+    } else {
+      navigate(`${window.location.origin}/auth/login`);
+    }
+  };
+
+  return (
+    <div className='w-full h-full bg-back flex flex-col  justify-between items-center'>
+      {/** Top menu */}
+      <div className="flex w-full p-5 flex-row justify-between items-center">
+        <button type="button" onClick={handleBack} title="back" className="h-8 w-8 hover:bg-hback rounded-full shadow-[0_2px_6px_1px_rgba(0,0,0,0.01)] shadow-wA flex items-center">
+          <IoArrowBackSharp className="text-2xl m-auto cursor-pointer text-text"/>
+        </button>
+        <h1 className="text-xl font-semibold text-text">Profile</h1>
+        <div className="h-8 w-8"></div>
+      </div>
+
+      {/** Profile component */}
+      <div className="flex-1 w-full flex flex-col justify-start py-10 gap-6 items-center animate-pulse">
+        <div className="flex flex-col gap-5 items-center">
+          <div className="overflow-hidden w-52 h-52 bg-wA rounded-full"></div>
+
+          <div className="h-8 w-30 bg-wA rounded-full" />
+        </div>
+
+        <div className="bg-wA rounded-2xl w-84 h-52 flex flex-col justify-start items-center p-4 gap-4">
+          <div className="w-full h-4 bg-back rounded-full"/>
+        </div>
+
+        <div className='w-full max-w-52 flex justify-center items-center gap-3 rounded-lg bg-wA h-12 hover:bg-hblueC text-wA mt-3' />
+      </div>
     </div>
   )
 }

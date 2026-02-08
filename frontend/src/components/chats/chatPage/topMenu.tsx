@@ -7,7 +7,7 @@ import { type RefObject } from "react";
 import type { ConversationWithMessagesType } from "../../../pages/home/chatPage";
 import { IoPersonCircleSharp } from "react-icons/io5";
 
-const TopMenu = ({data, id, tabRef}: {data: ConversationWithMessagesType | undefined, id: string | undefined, tabRef: RefObject<string | null> }) => {
+const TopMenu = ({data, id, tabRef}: {data: ConversationWithMessagesType | undefined, id: string | undefined, tabRef: RefObject<string | null>}) => {
   const navigate = useNavigate();
   const isPrivate = data?.type === 'PRIVATE';
   const name = isPrivate ? data.participants[0].user.id === id ? data.participants[1].user.username : data.participants[0].user.username : data?.name;

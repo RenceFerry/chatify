@@ -2,7 +2,7 @@ import { FiMoon } from "react-icons/fi";
 import { MdDeleteOutline } from "react-icons/md";
 import ToggleButton from "../toggleButton";
 import { useContext } from "react";
-import { ThemeContext } from "../../App";
+import { ThemeContext } from "../../lib/contexts";
 
 const More = () => {
   const { theme, changeTheme } = useContext(ThemeContext)!;

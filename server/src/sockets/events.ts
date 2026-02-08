@@ -1,16 +1,32 @@
+import { prisma } from "../lib/prisma.js";
 import { Socket, Server } from "socket.io";
 import { storeMessages, setUnreadCount } from "./socketcontollers/serverActions.controller.js";
+import redis from "../lib/redis.js";
 
-export const conversationEvents = (socket: Socket, io: Server) => {
-  socket.on('conversation:open', (convoId) => {
+export const conversationEvents = async (socket: Socket, io: Server) => {
+  socket.on('conversation:open', async (convoId: string) => {
     socket.join(convoId);
-    console.log(socket.id + 'joined' + convoId);
-  })
+    
+    try {
+      await prisma.conversationParticipant.update({
+        where: {
+          userId_conversationId: {
+            userId: socket.data.user.id,
+            conversationId: convoId
+          }
+        },
+        data: {
+          lastReadAt: new Date()
+        }
+      })
+    } catch (e) {
+      console.log(e);
+    }
+  });
 
-  socket.on('conversation:close', (convoId) => {
+  socket.on('conversation:close', async (convoId: string) => {
     socket.leave(convoId);
-    console.log(socket.id + 'leave' + convoId);
-  })
+  });
 }
 
 export const messageEvents = (socket: Socket, io: Server) => {
@@ -63,5 +79,22 @@ export const messageEvents = (socket: Socket, io: Server) => {
 
     socket.emit('message:sent', {sentMessage: messageStore.messages[0], id: message.id});
   })
-}
+};
 
+export const callsEvents = (socket: Socket, io: Server) => {
+  socket.on('call:start', ({ to, isVideo }) => {
+    socket.to(to).emit('call:incoming', { from: socket.data.user.id, isVideo });
+  });
+
+  socket.on('call:answer', ({ to, answer }) => {
+    socket.to(to).emit('call:answered', { from: socket.data.user.id, answer });
+  });
+
+  socket.on('call:ice-candidate', ({ to, candidate }) => {
+    socket.to(to).emit('call:ice-candidate', { from: socket.data.user.id, candidate });
+  });
+
+  socket.on('call:end', ({ to }) => {
+    socket.to(to).emit('call:ended', { from: socket.data.user.id });
+  });
+}

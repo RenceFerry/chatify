@@ -5,7 +5,7 @@ import { useState, useContext, useMemo, useCallback } from 'react';
 import { useRef } from 'react';
 import clsx from 'clsx';
 import { Link, useSearchParams } from 'react-router-dom';
-import { UserContext } from '../App';
+import { UserContext } from '../lib/contexts';
 import debounce from 'debounce';
 
 const TopTab = ({onSearch}: { onSearch: (tab: string, value: string) => void }) => {

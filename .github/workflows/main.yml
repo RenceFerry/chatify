@@ -1,0 +1,12 @@
+name: Keep Database Alive
+
+on: 
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  ping-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query Database
+        run: psql ${{ secrets.DATABASE_URL }} -c "SELECT 1;"
